@@ -1,0 +1,2704 @@
+{
+  "schema_version": "1.0.0",
+  "elements": [
+    {
+      "description": "",
+      "summary": "",
+      "path": "actindo-tree-detail-dialog.html",
+      "properties": [
+        {
+          "name": "data",
+          "type": "Object",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 120,
+              "column": 20
+            },
+            "end": {
+              "line": 128,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          }
+        },
+        {
+          "name": "editing",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 129,
+              "column": 20
+            },
+            "end": {
+              "line": 132,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "noCancelOnOutsideClick",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 133,
+              "column": 20
+            },
+            "end": {
+              "line": 136,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "class",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 137,
+              "column": 20
+            },
+            "end": {
+              "line": 139,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 140,
+              "column": 20
+            },
+            "end": {
+              "line": 142,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "key",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 143,
+              "column": 20
+            },
+            "end": {
+              "line": 146,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "\"\""
+        },
+        {
+          "name": "disabled",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 147,
+              "column": 20
+            },
+            "end": {
+              "line": 150,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "_getDisabled",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 153,
+              "column": 12
+            },
+            "end": {
+              "line": 156,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "name"
+            }
+          ]
+        },
+        {
+          "name": "delete",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 158,
+              "column": 12
+            },
+            "end": {
+              "line": 162,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "cancel",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 164,
+              "column": 12
+            },
+            "end": {
+              "line": 167,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "open",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 169,
+              "column": 12
+            },
+            "end": {
+              "line": 174,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "reset",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 176,
+              "column": 12
+            },
+            "end": {
+              "line": 181,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "submit",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 183,
+              "column": 12
+            },
+            "end": {
+              "line": 190,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "onEnterPressed",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 192,
+              "column": 12
+            },
+            "end": {
+              "line": 203,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            }
+          ]
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 111,
+          "column": 8
+        },
+        "end": {
+          "line": 205,
+          "column": 9
+        }
+      },
+      "privacy": "public",
+      "superclass": "Polymer.Element",
+      "name": "ActindoTreeDetailDialog",
+      "attributes": [
+        {
+          "name": "data",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 120,
+              "column": 20
+            },
+            "end": {
+              "line": 128,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "Object"
+        },
+        {
+          "name": "editing",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 129,
+              "column": 20
+            },
+            "end": {
+              "line": 132,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "no-cancel-on-outside-click",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 133,
+              "column": 20
+            },
+            "end": {
+              "line": 136,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "class",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 137,
+              "column": 20
+            },
+            "end": {
+              "line": 139,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "name",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 140,
+              "column": 20
+            },
+            "end": {
+              "line": 142,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "key",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 143,
+              "column": 20
+            },
+            "end": {
+              "line": 146,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "disabled",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 147,
+              "column": 20
+            },
+            "end": {
+              "line": 150,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "data-changed",
+          "description": "Fired when the `data` property changes.",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "actindo-tree-detail-dialog"
+    },
+    {
+      "description": "",
+      "summary": "",
+      "path": "actindo-tree-column-item.html",
+      "properties": [
+        {
+          "name": "selected",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 88,
+              "column": 20
+            },
+            "end": {
+              "line": 91,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "data",
+          "type": "Object",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 92,
+              "column": 20
+            },
+            "end": {
+              "line": 94,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "disabledDrag",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 95,
+              "column": 20
+            },
+            "end": {
+              "line": 98,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true
+            }
+          }
+        },
+        {
+          "name": "expanded",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 99,
+              "column": 20
+            },
+            "end": {
+              "line": 101,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "level",
+          "type": "number",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 102,
+              "column": 20
+            },
+            "end": {
+              "line": 104,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "nameField",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 105,
+              "column": 20
+            },
+            "end": {
+              "line": 107,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "maxDepth",
+          "type": "number",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 108,
+              "column": 20
+            },
+            "end": {
+              "line": 110,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "showExpandIcon",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 111,
+              "column": 20
+            },
+            "end": {
+              "line": 114,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          }
+        },
+        {
+          "name": "title",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 115,
+              "column": 20
+            },
+            "end": {
+              "line": 117,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "_setTitle",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 126,
+              "column": 12
+            },
+            "end": {
+              "line": 130,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_isFirst",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 131,
+              "column": 12
+            },
+            "end": {
+              "line": 134,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "index"
+            }
+          ]
+        },
+        {
+          "name": "onExpandedClick",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 135,
+              "column": 12
+            },
+            "end": {
+              "line": 139,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            }
+          ]
+        },
+        {
+          "name": "_showExpandIcon",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 140,
+              "column": 12
+            },
+            "end": {
+              "line": 143,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "level"
+            },
+            {
+              "name": "maxDepth"
+            }
+          ]
+        },
+        {
+          "name": "onDelete",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 145,
+              "column": 12
+            },
+            "end": {
+              "line": 148,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "onMouseover",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 150,
+              "column": 12
+            },
+            "end": {
+              "line": 153,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "onMouseout",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 154,
+              "column": 12
+            },
+            "end": {
+              "line": 157,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "onEditSubmit",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 158,
+              "column": 12
+            },
+            "end": {
+              "line": 162,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "onClick",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 163,
+              "column": 12
+            },
+            "end": {
+              "line": 166,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 79,
+          "column": 8
+        },
+        "end": {
+          "line": 167,
+          "column": 9
+        }
+      },
+      "privacy": "public",
+      "superclass": "Polymer.Element",
+      "name": "ActindoTreeColumnItem",
+      "attributes": [
+        {
+          "name": "selected",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 88,
+              "column": 20
+            },
+            "end": {
+              "line": 91,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "data",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 92,
+              "column": 20
+            },
+            "end": {
+              "line": 94,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "Object"
+        },
+        {
+          "name": "disabled-drag",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 95,
+              "column": 20
+            },
+            "end": {
+              "line": 98,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "expanded",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 99,
+              "column": 20
+            },
+            "end": {
+              "line": 101,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "level",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 102,
+              "column": 20
+            },
+            "end": {
+              "line": 104,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        },
+        {
+          "name": "name-field",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 105,
+              "column": 20
+            },
+            "end": {
+              "line": 107,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "max-depth",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 108,
+              "column": 20
+            },
+            "end": {
+              "line": 110,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        },
+        {
+          "name": "show-expand-icon",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 111,
+              "column": 20
+            },
+            "end": {
+              "line": 114,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "title",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 115,
+              "column": 20
+            },
+            "end": {
+              "line": 117,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "disabled-drag-changed",
+          "description": "Fired when the `disabledDrag` property changes.",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [
+        {
+          "description": "",
+          "name": "prefix",
+          "range": {
+            "file": "actindo-tree-column-item.html",
+            "start": {
+              "line": 66,
+              "column": 12
+            },
+            "end": {
+              "line": 66,
+              "column": 39
+            }
+          }
+        }
+      ],
+      "tagname": "actindo-tree-column-item"
+    },
+    {
+      "description": "CSS custom property | Description | Default\n  ------------------- | ----------- | -------\n  `--drag-resize-handle-size` | draggable edge/corner size | 8px;\n  `--drag-resize-corner-color` | color for resizable corner | '';\n  `--drag-resize-edge-padding` | padding for resizable edges | '';\n  `--drag-resize-edge-border` | border for resizable edges | '';\n  `--drag-resize-corner-border` | border for resizable corners | '';\n  `--drag-resize-container` | Mixin applied to resize container | {};\n  `--drag-resize-move-cursor` | move cursor | move;\n  `--drag-resize-top-cursor` | top cursor | ns-resize;\n  `--drag-resize-bottom-cursor` | bottom cursor | ns-resize;\n  `--drag-resize-left-cursor` | left cursor | ew-resize;\n  `--drag-resize-right-cursor` | right cursor | ew-resize;\n  `--drag-resize-top-left-cursor` | top-left cursor | nw-resize;\n  `--drag-resize-top-right-cursor` | top-right cursor | ne-resize;\n  `--drag-resize-bottom-left-cursor` | bottom-left cursor | sw-resize;\n  `--drag-resize-bottom-right-cursor` | bottom-right cursor | se-resize;\n\n`drag-resize`\nA touch friendly draggable and/or resizable container.",
+      "summary": "",
+      "path": "actindo-tree-resize.html",
+      "properties": [
+        {
+          "name": "drag",
+          "type": "string",
+          "description": "Which directions the container can be dragged.\nAny combination of `up`, `down`, `left`, or `right`; or `none`.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 182,
+              "column": 10
+            },
+            "end": {
+              "line": 187,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_dragChanged\""
+            }
+          },
+          "defaultValue": "\"up down left right\""
+        },
+        {
+          "name": "resize",
+          "type": "string",
+          "description": "Which edges allow resize.\nAny combination of `top`, `bottom`, `left`, or `right`; or `none`.\nA corner is enabled when both of its adjacent sides are enabled.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 193,
+              "column": 10
+            },
+            "end": {
+              "line": 198,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "observer": "\"_resizeChanged\""
+            }
+          },
+          "defaultValue": "\"top bottom left right\""
+        },
+        {
+          "name": "draggable",
+          "type": "boolean",
+          "description": "True if draggable in at least one direction.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 202,
+              "column": 10
+            },
+            "end": {
+              "line": 207,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "resizable",
+          "type": "boolean",
+          "description": "True if resizable on at least one edge.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 211,
+              "column": 10
+            },
+            "end": {
+              "line": 216,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true
+            }
+          },
+          "defaultValue": "false"
+        },
+        {
+          "name": "minWidth",
+          "type": "number",
+          "description": "The minium width of the content",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 221,
+              "column": 10
+            },
+            "end": {
+              "line": 223,
+              "column": 11
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "connectedCallback",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 226,
+              "column": 6
+            },
+            "end": {
+              "line": 238,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "disconnectedCallback",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 239,
+              "column": 6
+            },
+            "end": {
+              "line": 242,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "reset",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 243,
+              "column": 6
+            },
+            "end": {
+              "line": 251,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_resizeChanged",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 252,
+              "column": 6
+            },
+            "end": {
+              "line": 264,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "edges"
+            }
+          ]
+        },
+        {
+          "name": "_dragChanged",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 265,
+              "column": 6
+            },
+            "end": {
+              "line": 273,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "drag"
+            }
+          ]
+        },
+        {
+          "name": "_onResize",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 274,
+              "column": 6
+            },
+            "end": {
+              "line": 350,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            },
+            {
+              "name": "track"
+            }
+          ]
+        },
+        {
+          "name": "_onDrag",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 351,
+              "column": 6
+            },
+            "end": {
+              "line": 382,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            },
+            {
+              "name": "track"
+            }
+          ]
+        },
+        {
+          "name": "_sidesToTranslate",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 383,
+              "column": 6
+            },
+            "end": {
+              "line": 394,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "element"
+            }
+          ]
+        },
+        {
+          "name": "fire",
+          "description": "Copy the Polymer 1.x fire implementation.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 396,
+              "column": 6
+            },
+            "end": {
+              "line": 401,
+              "column": 7
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "name"
+            },
+            {
+              "name": "data"
+            },
+            {
+              "name": "options = {}"
+            }
+          ]
+        }
+      ],
+      "staticMethods": [],
+      "demos": [
+        {
+          "url": "demo/index.html",
+          "description": ""
+        }
+      ],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 174,
+          "column": 4
+        },
+        "end": {
+          "line": 412,
+          "column": 5
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "ActindoTreeResize",
+      "attributes": [
+        {
+          "name": "drag",
+          "description": "Which directions the container can be dragged.\nAny combination of `up`, `down`, `left`, or `right`; or `none`.",
+          "sourceRange": {
+            "start": {
+              "line": 182,
+              "column": 10
+            },
+            "end": {
+              "line": 187,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "resize",
+          "description": "Which edges allow resize.\nAny combination of `top`, `bottom`, `left`, or `right`; or `none`.\nA corner is enabled when both of its adjacent sides are enabled.",
+          "sourceRange": {
+            "start": {
+              "line": 193,
+              "column": 10
+            },
+            "end": {
+              "line": 198,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        },
+        {
+          "name": "draggable",
+          "description": "True if draggable in at least one direction.",
+          "sourceRange": {
+            "start": {
+              "line": 202,
+              "column": 10
+            },
+            "end": {
+              "line": 207,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "resizable",
+          "description": "True if resizable on at least one edge.",
+          "sourceRange": {
+            "start": {
+              "line": 211,
+              "column": 10
+            },
+            "end": {
+              "line": 216,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "min-width",
+          "description": "The minium width of the content",
+          "sourceRange": {
+            "start": {
+              "line": 221,
+              "column": 10
+            },
+            "end": {
+              "line": 223,
+              "column": 11
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "drag",
+          "description": "drag",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "resize",
+          "description": "resize",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [
+        {
+          "description": "",
+          "name": "",
+          "range": {
+            "file": "actindo-tree-resize.html",
+            "start": {
+              "line": 143,
+              "column": 6
+            },
+            "end": {
+              "line": 143,
+              "column": 19
+            }
+          }
+        }
+      ],
+      "tagname": "actindo-tree-resize"
+    },
+    {
+      "description": "",
+      "summary": "",
+      "path": "actindo-tree-column.html",
+      "properties": [],
+      "methods": [
+        {
+          "name": "_reOrderItems",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 271,
+              "column": 12
+            },
+            "end": {
+              "line": 291,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "items"
+            }
+          ]
+        },
+        {
+          "name": "_onColumnsChanged",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 299,
+              "column": 12
+            },
+            "end": {
+              "line": 301,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "items"
+            }
+          ]
+        },
+        {
+          "name": "_sort",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 303,
+              "column": 12
+            },
+            "end": {
+              "line": 310,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "a"
+            },
+            {
+              "name": "b"
+            }
+          ]
+        },
+        {
+          "name": "_onSortFinish",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 312,
+              "column": 12
+            },
+            "end": {
+              "line": 320,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            }
+          ]
+        },
+        {
+          "name": "getExpanded",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 322,
+              "column": 12
+            },
+            "end": {
+              "line": 332,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "getChildLevel",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 334,
+              "column": 12
+            },
+            "end": {
+              "line": 337,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "onClick",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 339,
+              "column": 12
+            },
+            "end": {
+              "line": 343,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            }
+          ]
+        },
+        {
+          "name": "onSelectedChanged",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 345,
+              "column": 12
+            },
+            "end": {
+              "line": 354,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue"
+            }
+          ]
+        },
+        {
+          "name": "notifyAddElement",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 356,
+              "column": 12
+            },
+            "end": {
+              "line": 365,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "addElement",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 367,
+              "column": 12
+            },
+            "end": {
+              "line": 394,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "showAddElementDialog",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 396,
+              "column": 12
+            },
+            "end": {
+              "line": 409,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "cancelAddElement",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 411,
+              "column": 12
+            },
+            "end": {
+              "line": 415,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "onItemsChange",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 417,
+              "column": 12
+            },
+            "end": {
+              "line": 420,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue"
+            }
+          ]
+        },
+        {
+          "name": "onDelete",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 422,
+              "column": 12
+            },
+            "end": {
+              "line": 441,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "edit",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 443,
+              "column": 12
+            },
+            "end": {
+              "line": 458,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "data"
+            }
+          ]
+        },
+        {
+          "name": "_isSelected",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 460,
+              "column": 12
+            },
+            "end": {
+              "line": 467,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "selected"
+            },
+            {
+              "name": "item"
+            }
+          ]
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 202,
+          "column": 8
+        },
+        "end": {
+          "line": 469,
+          "column": 9
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "ActindoTreeColumn",
+      "attributes": [],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "actindo-tree-column"
+    },
+    {
+      "description": "",
+      "summary": "",
+      "path": "actindo-tree-edit.html",
+      "properties": [],
+      "methods": [
+        {
+          "name": "showAddingOverlay",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 168,
+              "column": 12
+            },
+            "end": {
+              "line": 171,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "resetState",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 179,
+              "column": 12
+            },
+            "end": {
+              "line": 190,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_onTreeChanged",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 192,
+              "column": 12
+            },
+            "end": {
+              "line": 196,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "event"
+            }
+          ]
+        },
+        {
+          "name": "_save",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 197,
+              "column": 12
+            },
+            "end": {
+              "line": 217,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "onKeysPressed",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 219,
+              "column": 12
+            },
+            "end": {
+              "line": 225,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e"
+            }
+          ]
+        },
+        {
+          "name": "_cancel",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 227,
+              "column": 12
+            },
+            "end": {
+              "line": 232,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 98,
+          "column": 8
+        },
+        "end": {
+          "line": 234,
+          "column": 9
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "ActindoTreeEdit",
+      "attributes": [],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "actindo-tree-edit"
+    },
+    {
+      "description": "`<paper-tree-node>` display a tree node with expandable/collapsible capabilities and actions menu.\nA node is defined by a name, an icon and a list of actions.\nExample:\n    <paper-tree-node></paper-tree-node>\n### Styling\nThe following custom properties and mixins are available for styling:\nCustom property | Description | Default\n----------------|-------------|----------\n`--paper-tree-selected-background-color`      | Highlight color for selected node           | `rgba(200, 200, 200, 0.5)`\n`--paper-tree-selected-color`                 | Text and icon color for selected node       | `inherit`\n`--paper-tree-toggle-theme`                   | Change theme for node +/- toggle            |\n`--paper-tree-icon-theme`                     | Change theme for node icon                  |",
+      "summary": "",
+      "path": "actindo-tree-node.html",
+      "properties": [
+        {
+          "name": "items",
+          "type": "Array",
+          "description": "Contains all the items; filled either by remote request or if no remote is given by parameter\nData hold by the root node (contains the children).\n\nSpecific item:\n\n- `item.name`: string representing the node name.\n- `item.icon`: string telling which icon to use (default to 'folder' icon).\n- `item.open`: boolean telling whether the node is expanded or not.\n- `item.children` array containing the children of the node.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 139,
+              "column": 20
+            },
+            "end": {
+              "line": 144,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "notify": true,
+              "observer": "\"onItemsChange\""
+            }
+          },
+          "defaultValue": "[]"
+        },
+        {
+          "name": "level",
+          "type": "number",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 146,
+              "column": 20
+            },
+            "end": {
+              "line": 149,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "1"
+        },
+        {
+          "name": "showDefaultIcon",
+          "type": "boolean",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 151,
+              "column": 20
+            },
+            "end": {
+              "line": 153,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        },
+        {
+          "name": "actions",
+          "type": "Array",
+          "description": "`actions` available for this node. Each action object has the following fields:\n\n- `action.label`: string representing the display name of the menu item.\n- `action.event`: string which is the event name to dispatch whenever the item is clicked.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 161,
+              "column": 20
+            },
+            "end": {
+              "line": 166,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          },
+          "defaultValue": "null"
+        },
+        {
+          "name": "class",
+          "type": "string",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 168,
+              "column": 20
+            },
+            "end": {
+              "line": 170,
+              "column": 21
+            }
+          },
+          "metadata": {
+            "polymer": {}
+          }
+        }
+      ],
+      "methods": [
+        {
+          "name": "ready",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 176,
+              "column": 12
+            },
+            "end": {
+              "line": 179,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_computeClass",
+          "description": "Returns the necessary classes.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 196,
+              "column": 12
+            },
+            "end": {
+              "line": 200,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "change",
+              "type": "object",
+              "description": "An object containing the property that changed and its value."
+            }
+          ],
+          "return": {
+            "type": "string",
+            "desc": "The class name indicating whether the node is open or closed"
+          }
+        },
+        {
+          "name": "onItemsChange",
+          "description": "",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 202,
+              "column": 12
+            },
+            "end": {
+              "line": 205,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue"
+            }
+          ]
+        },
+        {
+          "name": "_getChildLevel",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 207,
+              "column": 12
+            },
+            "end": {
+              "line": 210,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_computeNodeIcon",
+          "description": "Returns the necessary icon name.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 218,
+              "column": 12
+            },
+            "end": {
+              "line": 222,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "change",
+              "type": "object",
+              "description": "An object containing the property that changed and its value."
+            }
+          ],
+          "return": {
+            "type": "string",
+            "desc": "The icon name indicating whether the node is open or closed"
+          }
+        },
+        {
+          "name": "_computeIcon",
+          "description": "Compute the necessary node icon.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 229,
+              "column": 12
+            },
+            "end": {
+              "line": 234,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "icon"
+            }
+          ]
+        },
+        {
+          "name": "_actionClicked",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 235,
+              "column": 12
+            },
+            "end": {
+              "line": 237,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "event"
+            }
+          ]
+        },
+        {
+          "name": "select",
+          "description": "Highlights node as the selected node.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 241,
+              "column": 12
+            },
+            "end": {
+              "line": 243,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "getParent",
+          "description": "Returns the parent tree node. Returns `null` if root.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 247,
+              "column": 12
+            },
+            "end": {
+              "line": 249,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "getChildren",
+          "description": "Returns the children tree nodes.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 253,
+              "column": 12
+            },
+            "end": {
+              "line": 255,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "toggleChildren",
+          "description": "Display/Hide the children nodes.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 259,
+              "column": 12
+            },
+            "end": {
+              "line": 264,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 124,
+          "column": 8
+        },
+        "end": {
+          "line": 266,
+          "column": 9
+        }
+      },
+      "privacy": "public",
+      "superclass": "Polymer.Element",
+      "name": "ActindoTreeNode",
+      "attributes": [
+        {
+          "name": "items",
+          "description": "Contains all the items; filled either by remote request or if no remote is given by parameter\nData hold by the root node (contains the children).\n\nSpecific item:\n\n- `item.name`: string representing the node name.\n- `item.icon`: string telling which icon to use (default to 'folder' icon).\n- `item.open`: boolean telling whether the node is expanded or not.\n- `item.children` array containing the children of the node.",
+          "sourceRange": {
+            "start": {
+              "line": 139,
+              "column": 20
+            },
+            "end": {
+              "line": 144,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "Array"
+        },
+        {
+          "name": "level",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 146,
+              "column": 20
+            },
+            "end": {
+              "line": 149,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "number"
+        },
+        {
+          "name": "show-default-icon",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 151,
+              "column": 20
+            },
+            "end": {
+              "line": 153,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "boolean"
+        },
+        {
+          "name": "actions",
+          "description": "`actions` available for this node. Each action object has the following fields:\n\n- `action.label`: string representing the display name of the menu item.\n- `action.event`: string which is the event name to dispatch whenever the item is clicked.",
+          "sourceRange": {
+            "start": {
+              "line": 161,
+              "column": 20
+            },
+            "end": {
+              "line": 166,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "Array"
+        },
+        {
+          "name": "class",
+          "description": "",
+          "sourceRange": {
+            "start": {
+              "line": 168,
+              "column": 20
+            },
+            "end": {
+              "line": 170,
+              "column": 21
+            }
+          },
+          "metadata": {},
+          "type": "string"
+        }
+      ],
+      "events": [
+        {
+          "type": "CustomEvent",
+          "name": "select",
+          "description": "select",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "toggle",
+          "description": "toggle",
+          "metadata": {}
+        },
+        {
+          "type": "CustomEvent",
+          "name": "items-changed",
+          "description": "Fired when the `items` property changes.",
+          "metadata": {}
+        }
+      ],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "actindo-tree-node"
+    },
+    {
+      "description": "`<actindo-tree>` implements a highly reusable data tree to display your data.\n\n### Features\n\n- remote loading of data\n- static data display",
+      "summary": "",
+      "path": "actindo-tree.html",
+      "properties": [],
+      "methods": [
+        {
+          "name": "_getDefaultRequestParams",
+          "description": "Set the default request param",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 130,
+              "column": 12
+            },
+            "end": {
+              "line": 136,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "ready",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 138,
+              "column": 12
+            },
+            "end": {
+              "line": 141,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_computeClass",
+          "description": "Compute the necessary border bottom",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 146,
+              "column": 12
+            },
+            "end": {
+              "line": 152,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "index"
+            }
+          ]
+        },
+        {
+          "name": "_setSelectNode",
+          "description": "Called when the `select` event is fired from an internal node.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 159,
+              "column": 12
+            },
+            "end": {
+              "line": 171,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "e",
+              "type": "object",
+              "description": "An event object."
+            }
+          ]
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 74,
+          "column": 8
+        },
+        "end": {
+          "line": 172,
+          "column": 9
+        }
+      },
+      "privacy": "public",
+      "superclass": "HTMLElement",
+      "name": "ActindoTree",
+      "attributes": [],
+      "events": [],
+      "styling": {
+        "cssVariables": [],
+        "selectors": []
+      },
+      "slots": [],
+      "tagname": "actindo-tree"
+    }
+  ],
+  "classes": [
+    {
+      "description": "",
+      "summary": "",
+      "path": "actindo-tree-remote-mixin.html",
+      "properties": [],
+      "methods": [
+        {
+          "name": "onItemsChange",
+          "description": "Called whenever the data is changed.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 70,
+              "column": 12
+            },
+            "end": {
+              "line": 71,
+              "column": 13
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue"
+            }
+          ]
+        },
+        {
+          "name": "_onLoadingCountChanged",
+          "description": "Determines if there is currently an active call",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 78,
+              "column": 11
+            },
+            "end": {
+              "line": 81,
+              "column": 12
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue",
+              "type": "Number"
+            },
+            {
+              "name": "oldValue",
+              "type": "Number"
+            }
+          ]
+        },
+        {
+          "name": "_onRemoteChanged",
+          "description": "Called when remote is changed",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 89,
+              "column": 11
+            },
+            "end": {
+              "line": 95,
+              "column": 12
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue",
+              "type": "String"
+            }
+          ]
+        },
+        {
+          "name": "_onRemoteParamsChanged",
+          "description": "reload when params have been changed",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 103,
+              "column": 11
+            },
+            "end": {
+              "line": 108,
+              "column": 12
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "newValue",
+              "type": "Object"
+            }
+          ]
+        },
+        {
+          "name": "load",
+          "description": "Trigger load data\nDebounces because of quasi simultaneously changed values of itemsPerPaged and param for example or multiple page changes",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 114,
+              "column": 11
+            },
+            "end": {
+              "line": 120,
+              "column": 12
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_serialize",
+          "description": "takes the given object and creates an http query string from it\nusage: let str = _serialize({foo: 'bar', baz: ['a', 'b']}); => 'foo=bar&baz[0]=a&baz[1]=b'",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 131,
+              "column": 11
+            },
+            "end": {
+              "line": 142,
+              "column": 12
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "obj",
+              "type": "Object",
+              "description": "the object to serialize"
+            },
+            {
+              "name": "prefix",
+              "type": "String",
+              "description": "internal only (used in recursive calls for nested objects)"
+            }
+          ],
+          "return": {
+            "type": "String"
+          }
+        },
+        {
+          "name": "_getDefaultRequestParams",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 144,
+              "column": 11
+            },
+            "end": {
+              "line": 147,
+              "column": 12
+            }
+          },
+          "metadata": {},
+          "params": []
+        },
+        {
+          "name": "_processData",
+          "description": "",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 149,
+              "column": 11
+            },
+            "end": {
+              "line": 152,
+              "column": 12
+            }
+          },
+          "metadata": {},
+          "params": [
+            {
+              "name": "items"
+            }
+          ]
+        },
+        {
+          "name": "_load",
+          "description": "Loads the data from remote",
+          "privacy": "private",
+          "sourceRange": {
+            "start": {
+              "line": 158,
+              "column": 11
+            },
+            "end": {
+              "line": 194,
+              "column": 12
+            }
+          },
+          "metadata": {},
+          "params": []
+        }
+      ],
+      "staticMethods": [],
+      "demos": [],
+      "metadata": {},
+      "sourceRange": {
+        "start": {
+          "line": 2,
+          "column": 15
+        },
+        "end": {
+          "line": 195,
+          "column": 10
+        }
+      },
+      "privacy": "public",
+      "superclass": "superClass"
+    }
+  ]
+}

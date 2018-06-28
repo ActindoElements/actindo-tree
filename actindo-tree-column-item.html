@@ -1,0 +1,171 @@
+<link rel="import" href="actindo-tree-icons.html">
+<link rel="import" href="actindo-tree-detail-dialog.html">
+<dom-module id="actindo-tree-column-item">
+    <template>
+        <style>
+            .container
+            {
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                position: relative;
+                padding-right: 1.7em;
+                padding-left: 0.9em;
+            }
+            li
+            {
+                list-style: none;
+            }
+            li:hover
+            {
+                background-color: var(--actindo-primary-light);
+            }
+            .btn-edit
+            {
+                display: none;
+                width: 30px;
+                height: 30px;
+                z-index: 2;
+                margin-left: 1em;
+            }
+            li:hover .btn-edit
+            {
+                display: block;
+            }
+            .btn-edit:hover
+            {
+                border-radius: 15px;
+                opacity: 0.6;
+                background-color: var(--actindo-primary);
+            }
+            li[selected] {
+                background-color: var(--actindo-light-grey);
+            }
+
+            .text
+            {
+                width: 50%;
+                display: flex;
+                height: 30px;
+                align-items: center;
+                position: relative;
+                flex: 1;
+                padding: 0 0.6em;
+            }
+            .first actindo-tree-detail-dialog
+            {
+                height: 100%;
+                width: 100%;
+                top: 10px;
+                position: absolute;
+            }
+        </style>
+        <li
+            class="container"
+            selected$="[[selected]]"
+        >
+            <slot name="prefix"></slot>
+            <div class="text" on-click="onClick">
+                <span>[[title]]</span>
+                <paper-icon-button on-click="onExpandedClick" class="btn-edit" icon="icons:create">
+                </paper-icon-button>
+            </div>
+            <iron-icon hidden$="[[!showExpandIcon]]" on-click="onClick" icon="tree:menu-right"></iron-icon>
+            <actindo-tree-detail-dialog name-field="[[nameField]]" class="[[_isFirst(index)]]" on-delete="onDelete" data="[[data]]" on-submit="onEditSubmit" editing="true" id="dialog"></actindo-tree-detail-dialog>
+        </li>
+
+    </template>
+
+    <script>
+        class ActindoTreeColumnItem extends Polymer.Element
+        {
+            static get is()
+            {
+                return "actindo-tree-column-item";
+            }
+
+            static get properties() {
+                return {
+                    selected: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    data: {
+                        type: Object
+                    },
+                    disabledDrag: {
+                        type: Boolean,
+                        notify: true
+                    },
+                    expanded: {
+                        type: Boolean,
+                    },
+                    level: {
+                        type: Number,
+                    },
+                    nameField: {
+                        type: String
+                    },
+                    maxDepth: {
+                        type: Number
+                    },
+                    showExpandIcon: {
+                        type: Boolean,
+                        computed: "_showExpandIcon(level, maxDepth)"
+                    },
+                    title: {
+                        type: String
+                    }
+                }
+            }
+
+            static get observers() {
+                return [
+                    '_setTitle(data.*)'
+                ]
+            }
+            _setTitle(data)
+            {
+                const newData = data.base;
+                this.set('title', newData[this.nameField]);
+            }
+            _isFirst(index)
+            {
+                return index === 0 && 'first';
+            }
+            onExpandedClick(e)
+            {
+                e.stopPropagation();
+                this.$.dialog.open();
+            }
+            _showExpandIcon(level, maxDepth)
+            {
+                return level < maxDepth;
+            }
+
+            onDelete()
+            {
+                this.dispatchEvent( new CustomEvent("delete", {detail: this.data }));
+            }
+
+            onMouseover()
+            {
+                this.disabledDrag = false;
+            }
+            onMouseout()
+            {
+                this.disabledDrag = true;
+            }
+            onEditSubmit(data)
+            {
+                this.set('title', data.detail[this.nameField]);
+                this.dispatchEvent( new CustomEvent("edit", {detail: data.detail }));
+            }
+            onClick()
+            {
+                this.dispatchEvent( new CustomEvent("row-clicked", {detail: {}}));
+            }
+        }
+        customElements.define(ActindoTreeColumnItem.is, ActindoTreeColumnItem);
+    </script>
+</dom-module>

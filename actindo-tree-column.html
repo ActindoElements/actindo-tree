@@ -1,0 +1,473 @@
+<link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
+<link rel="import" href="actindo-tree-detail-dialog.html">
+<link rel="import" href="actindo-tree-column-item.html">
+<link rel="import" href="../../../Resources/sharedlabs/sortable-list.html">
+<link rel="import" href="actindo-tree-icons.html">
+<link rel="import" href="actindo-tree-remote-mixin.html">
+<link rel="import" href="actindo-tree-resize.html">
+
+<dom-module id="actindo-tree-column">
+    <template>
+        <style>
+            paper-scroll-header-panel,
+            sortable-list,
+            paper-scroll-header-panel > div
+            {
+                height: auto !important;
+                width: 100%;
+            }
+
+            actindo-tree-resize
+            {
+                height: 100%;
+                min-width: 230px;
+                --drag-resize-container: {
+                    height: 100%;
+                    width: 100%;
+                };
+                --drag-resize-handle-size: 15px;
+            }
+
+            .column-container
+            {
+                display: flex;
+                flex-direction: row;
+                height: 100% !important;
+                width: 100%;
+                min-width: 230px;
+            }
+
+            .column-container .right
+            {
+                background-color: var(--actindo-light-grey-dark);
+                width: 15px;
+                height: 100%;
+                position: absolute;
+                display: flex;
+                flex-direction: column-reverse;
+                right: 0;
+                z-index: 3;
+            }
+
+            .right iron-icon
+            {
+                width: 15px;
+                height: 15px;
+                opacity: 0.7;
+            }
+
+            .column
+            {
+                height: 100%;
+            }
+
+            paper-scroll-header-panel
+            {
+                z-index: 1;
+            }
+
+            div.overlay
+            {
+                margin-right: 15px;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                background-color: var(--actindo-secondary-light);
+                color: white;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                opacity: 0.52;
+                z-index: 2;
+                @apply(--font-title);
+                display: none;
+            }
+
+            div.overlay:hover
+            {
+                opacity: 1;
+                cursor: pointer;
+            }
+
+            paper-icon-button
+            {
+                width: 5em;
+                height: 5em;
+            }
+
+            .overlay.show-overlay-true
+            {
+                display: flex;
+            }
+
+            .overlay.show-overlay-true.show-dialog-true
+            {
+                background-color: white;
+                opacity: 0.5;
+                pointer-events:none;
+            }
+
+            .dialog
+            {
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                width: 100%;
+                height: 100%;
+            }
+            sortable-js.hide-true
+            {
+                display: none;
+            }
+            sortable-js
+            {
+                display: flex;
+                flex-direction: column;
+            }
+            .drag-icon
+            {
+                width: 18px;
+                height: 18px;
+                opacity: 0.7;
+            }
+            .drag-icon:hover
+            {
+                cursor: move;
+            }
+
+        </style>
+
+        <actindo-tree-resize min-width="230" drag="" resize="right">
+            <div class="column-container">
+                <div on-click="showAddElementDialog" class$="overlay show-overlay-[[adding]] show-dialog-[[showDialog]]">
+                    <paper-icon-button icon="icons:add"></paper-icon-button>
+                </div>
+
+                <paper-scroll-header-panel>
+                    <div slot="content" class="column">
+                        <sortable-js class$="hide-[[!items.length]]" on-end="_onSortFinish" handle=".drag-icon" >
+                            <template id="repeat" is="dom-repeat" items="{{items}}" as="item" index-as="i" sort="_sort" observe="sortOrder">
+                                <actindo-tree-column-item
+                                    selected="[[_isSelected(selected, item)]]"
+                                    data="{{item}}"
+                                    on-delete="onDelete"
+                                    on-row-clicked="onClick"
+                                    disabled-drag="{{disabledDrag}}"
+                                    on-edit="edit"
+                                    name-field="[[nameField]]"
+                                    index="[[index]]"
+                                    level="[[level]]"
+                                    max-depth="[[maxDepth]]"
+                                >
+                                    <iron-icon class="drag-icon" slot="prefix" icon="icons:menu"></iron-icon>
+
+                                </actindo-tree-column-item>
+                            </template>
+                        </sortable-js>
+                    </div>
+                </paper-scroll-header-panel>
+                <actindo-tree-detail-dialog
+                    no-cancel-on-outside-click="true"
+                    class="dialog"
+                    id="dialog"
+                    on-cancel="cancelAddElement"
+                    name-field="[[nameField]]"
+                    on-submit="addElement"
+                ></actindo-tree-detail-dialog>
+                <div id="right" class="right">
+                    <iron-icon icon="tree:columnwidth-adjuster"></iron-icon>
+                </div>
+            </div>
+        </actindo-tree-resize>
+        <template is="dom-if" if="[[expanded]]">
+            <actindo-tree-column
+                max-depth="{{maxDepth}}"
+                level="[[getChildLevel()]]"
+                min-fake-id="{{minFakeId}}"
+                parent-id="[[selected.id]]"
+                changed="{{changed}}"
+                name-field="[[nameField]]"
+                item-order-path="[[itemOrderPath]]"
+                adding="{{adding}}"
+                show-dialog="{{showDialog}}"
+                items="[[selected.children]]"
+            ></actindo-tree-column>
+        </template>
+
+    </template>
+
+    <script>
+        class ActindoTreeColumn extends ActindoTreeRemoteMixin(Polymer.Element)
+        {
+            static get is()
+            {
+                return "actindo-tree-column";
+            }
+
+            static get properties()
+            {
+                return Object.assign({}, super.properties, {
+                    selected: {
+                        type: Object,
+                        value: {},
+                        notify: true,
+                        observer: 'onSelectedChanged'
+                    },
+                    showOverlay: {
+                        type: Object,
+                        value: false,
+                    },
+                    sorted: {
+                        type: Boolean,
+                        value: false
+                    },
+                    showDialog: {
+                        type: Object,
+                        value: false,
+                        notify: true
+                    },
+                    adding: {
+                        type: Boolean,
+                        notify: true,
+                    },
+                    items: {
+                        type: Array,
+                        notify: true,
+                    },
+                    disabledDrag: {
+                        type: Boolean,
+                        value: true
+                    },
+                    changed: {
+                        type: Object,
+                        notify: true
+                    },
+                    minFakeId: {
+                        type: Number,
+                        value: -1,
+                        notify: true
+                    },
+                    parentId: {
+                        type: Number,
+                        value: null,
+                    },
+                    level: {
+                        type: Number,
+                        value: 1
+                    },
+                    expanded: {
+                        type: Boolean,
+                        value: true,
+                    },
+                    itemOrderPath: {
+                        type: String
+                    }
+                });
+            }
+
+
+            _reOrderItems(items)
+            {
+                if (!this.itemOrderPath)
+                {
+                    return;
+                }
+
+                items.forEach((item, index) => {
+                    item[this.itemOrderPath] = index;
+                    if (item.id > 0)
+                    {
+                        const idx = this.changed.modified.indexOf(item);
+                        if (idx < 0)
+                        {
+                            this.push('changed.modified', item);
+                        } else {
+                            this.notifyPath('changed.modified');
+                        }
+                    }
+                });
+            }
+
+             static get observers() {
+                return [
+                    '_onColumnsChanged(items.*)',
+                ];
+            }
+
+            _onColumnsChanged(items){
+                console.log(items.base);
+            }
+
+            _sort(a, b)
+            {
+                if (!this.itemOrderPath)
+                {
+                    return;
+                }
+                return a[this.itemOrderPath] <= b[this.itemOrderPath] ? -1 : 1;
+            }
+
+            _onSortFinish(e)
+            {
+                if (!e.hasOwnProperty('newIndex') || !e.hasOwnProperty('oldIndex'))
+                {
+                    return;
+                }
+                this.items.splice(e.newIndex, 0, this.items.splice(e.oldIndex, 1)[0]);
+                this._reOrderItems(this.items);
+            }
+
+            getExpanded()
+            {
+                if (!this.selected.children){
+                    return false;
+                }
+
+                if (!this.maxDepth){
+                    return true;
+                }
+                return this.level + 1 <= this.maxDepth;
+            }
+
+            getChildLevel()
+            {
+                return this.level + 1;
+            }
+
+            onClick(e) {
+
+                this.selected = e.model.item;
+                this.expanded = this.getExpanded();
+            }
+
+            onSelectedChanged(newValue)
+            {
+                if (!newValue)
+                {
+                    return;
+                }
+                if (!newValue.children){
+                    this.expanded = false;
+                }
+            }
+
+            notifyAddElement(data)
+            {
+                // Only push to created if the item is root or a child of a real item
+                if (!data.detail.parent_id || data.detail.parent_id >= 0)
+                {
+                    this.push('changed.created', data.detail);
+                    return;
+                }
+                this.notifyPath('changed.created');
+            }
+
+            addElement(data)
+            {
+                this.showDialog = false;
+                this.adding = false;
+                Object.assign(data.detail, {
+                    id: this.minFakeId,
+                    children: [],
+                    active: true,
+                    parent_id: this.parentId
+                });
+                this.minFakeId = this.minFakeId - 1;
+                if (this.itemOrderPath)
+                {
+                    data.detail[this.itemOrderPath] = 0;
+                }
+                if (!this.selected.id)
+                {
+                    this.unshift('items', data.detail);
+                    this.notifyPath('items');
+                    this._reOrderItems(this.items);
+                    this.notifyAddElement(data);
+                    return;
+                }
+                const idx = this.items.indexOf(this.selected);
+                this.splice('items', idx + 1, 0, data.detail);
+                this._reOrderItems(this.items);
+                this.notifyAddElement(data);
+            }
+
+            showAddElementDialog()
+            {
+                this.showDialog = true;
+                let dialog = this.shadowRoot.querySelector('#dialog');
+                dialog.style.top = '5px';
+                if (this.selected.id)
+                {
+                    const idx = this.items.indexOf(this.selected);
+                    dialog.style.top = 30 * (idx + 1) + 'px';
+                }
+
+                dialog.reset();
+                dialog.open();
+            }
+
+            cancelAddElement()
+            {
+                this.showDialog = false;
+                this.adding = false;
+            }
+
+            onItemsChange(newValue)
+            {
+                this.selected = {};
+            }
+
+            onDelete(data)
+            {
+                if (data.detail.id >= 0) {
+                    this.push('changed.deleted', data.detail);
+                }
+                const idxModified = this.changed.modified.indexOf(data.detail);
+                if (idxModified >= 0)
+                {
+                    this.splice('changed.modified', idxModified, 1);
+                }
+
+                const idxCreated = this.changed.created.indexOf(data.detail);
+                if (idxCreated >= 0)
+                {
+                    this.splice('changed.created', idxModified, 1);
+                }
+                const idx = this.items.indexOf(data.detail);
+                this.splice('items', idx, 1);
+                this.selected = {};
+            }
+
+            edit(data)
+            {
+                // if the id less than 0 than the modifying item is in the created
+                if (data.detail.id < 0)
+                {
+                    this.notifyPath('changed.created');
+                    return;
+                }
+                const idx = this.changed.modified.indexOf(data.detail);
+                if (idx < 0)
+                {
+                    this.push('changed.modified', data.detail);
+                    return;
+                }
+                this.notifyPath('changed.modified');
+            }
+
+            _isSelected(selected, item)
+            {
+                if (!selected)
+                {
+                    return false;
+                }
+                return selected.id === item.id;
+            }
+
+        }
+        customElements.define(ActindoTreeColumn.is, ActindoTreeColumn);
+    </script>
+</dom-module>

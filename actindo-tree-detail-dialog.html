@@ -1,0 +1,209 @@
+<link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<dom-module id="actindo-tree-detail-dialog">
+    <template>
+        <style>
+            paper-dialog.first
+            {
+                top: 10px;
+            }
+            paper-dialog
+            {
+                @apply(--paper-material-elevation-2);
+                padding: 1em 0;
+                width: calc(100% - 23px);
+                margin-left: 4px;
+                position: absolute;
+                top: 0;
+                left: 0;
+            }
+            .content,
+            paper-input
+            {
+                margin-top: 0;
+            }
+            paper-button.save
+            {
+                color: white;
+                background-color: var(--actindo-primary);
+            }
+            .content
+            {
+                margin-bottom: 1em;
+            }
+            .dialog-header
+            {
+                color: var(--actindo-secondary);
+                font-size: var(--font-subheader_-_font-size);
+                font-weight: normal;
+                width: 100%;
+                display: block;
+            }
+            .editing-false .btn-delete
+            {
+                display: none;
+            }
+            .editing-true .dialog-header
+            {
+                display: none;
+            }
+
+            .buttons
+            {
+                padding: 8px 8px 0px 12px;
+                display: flex;
+                justify-content: space-between;
+            }
+            .editing-false .buttons
+            {
+                justify-content: flex-end;
+                padding-right: 20px;
+            }
+            .buttons > div
+            {
+                display: flex;
+            }
+
+            .buttons paper-icon-button
+            {
+                color: var(--actindo-secondary);
+                opacity: 0.52;
+            }
+
+            .buttons paper-button
+            {
+                font-size: 0.9em;
+            }
+
+
+        </style>
+        <iron-a11y-keys id="a11y" keys="enter" on-keys-pressed="onEnterPressed">
+            <paper-dialog
+                id="alignedDialog"
+                class$="editing-[[editing]] [[class]]"
+                no-cancel-on-outside-click="[[noCancelOnOutsideClick]]"
+            >
+                <span class="dialog-header">Add Element</span>
+                <div class="content">
+                    <paper-input
+                        autofocus
+                        value="{{name}}"
+                        label="Name"
+                    >
+                    </paper-input>
+                    <paper-input
+                        value="{{key}}"
+                        label="Key"
+                    >
+                    </paper-input>
+                </div>
+              <div class="buttons">
+                <paper-icon-button hidden$="[[!editing]]" class="btn-delete" on-click="delete" icon="delete" >
+                </paper-icon-button>
+                <div>
+                    <paper-button dialog-dismiss on-click="cancel" id="cancel" >Cancel</paper-button>
+                    <paper-button dialog-confirm disabled="[[disabled]]" raised on-click="submit" id="save" class="save">Save</paper-button>
+                </div>
+              </div>
+            </paper-dialog>
+        </iron-a11y-keys>
+    </template>
+
+    <script>
+        class ActindoTreeDetailDialog extends Polymer.Element
+        {
+            static get is()
+            {
+                return "actindo-tree-detail-dialog";
+            }
+
+            static get properties() {
+                return {
+                    data: {
+                        type: Object,
+                        notify: true,
+                        value: function() {
+                            return {
+                                key: ''
+                            };
+                        },
+                    },
+                    editing: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    noCancelOnOutsideClick: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    class: {
+                        type: String
+                    },
+                    name: {
+                        type: String
+                    },
+                    key: {
+                        type: String,
+                        value: ''
+                    },
+                    disabled: {
+                        type: Boolean,
+                        computed: '_getDisabled(name)'
+                    }
+                }
+            }
+            _getDisabled(name)
+            {
+                return !name;
+            }
+
+            delete()
+            {
+                this.dispatchEvent( new CustomEvent("delete", {detail: this.data }));
+                this.$.alignedDialog.close();
+            }
+
+            cancel()
+            {
+                this.dispatchEvent( new CustomEvent("cancel", {detail: {} }));
+            }
+
+            open()
+            {
+                this.name = this.data[this.nameField];
+                this.key = this.data.key;
+                this.$.alignedDialog.open();
+            }
+
+            reset()
+            {
+                this.data = {
+                    key: ''
+                };
+            }
+
+            submit()
+            {
+                Object.assign(this.data, {
+                  key: this.key
+                });
+                this.data[this.nameField] = this.name;
+                this.dispatchEvent( new CustomEvent("submit", {detail: this.data }));
+            }
+
+            onEnterPressed(e)
+            {
+                if (!this.name)
+                {
+                   return;
+                }
+                if(  e.detail.keyboardEvent.key === "Enter" )
+                {
+                    this.submit();
+                    this.$.alignedDialog.close();
+                }
+            }
+
+        }
+        customElements.define(ActindoTreeDetailDialog.is, ActindoTreeDetailDialog);
+    </script>
+</dom-module>

@@ -1,0 +1,21 @@
+{
+    "name": "actindo-tree",
+    "version": "0.9.1",
+    "description": "A highly reusable data tree to",
+    "license": "Apache-2.0",
+    "main": "actindo-tree.html",
+    "keywords": [
+        "polymer",
+        "web-components"
+    ],
+    "ignore": [
+        "**/.*",
+        "bower_components"
+    ],
+    "dependencies": {
+        "polymer": "Polymer/polymer#^2.0.0",
+        "paper-dialog": "^2.0.0",
+        "paper-icon-button": "^2.0.0",
+        "polymer-sortablejs": "^0.1.3"
+    }
+}

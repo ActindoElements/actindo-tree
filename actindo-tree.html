@@ -1,0 +1,177 @@
+<link rel="import" href="../../bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="actindo-tree-node.html">
+<link rel="import" href="actindo-tree-remote-mixin.html">
+
+<!--
+`<actindo-tree>` implements a highly reusable data tree to display your data.
+
+### Features
+
+- remote loading of data
+- static data display
+
+-->
+
+<dom-module id="actindo-tree">
+    <template>
+        <style>
+            :host {
+                --actindo-tree-node-container: {
+                    padding: 0 0.7em;
+                    white-space: nowrap
+                }
+            }
+            .container
+            {
+                position: relative;
+                height: 100%;
+            }
+            .parent-node
+            {
+                padding: 0.6em 0;
+                border-bottom: 1px solid var(--actindo-border-dark);
+            }
+            .parent-node.last
+            {
+                border-bottom: none;
+            }
+            paper-spinner-lite
+            {
+                --paper-spinner-color: var(--actindo-primary);
+                width: 50px;
+                height: 50px;
+            }
+            .loading
+            {
+                position: absolute;
+                top: 0;
+                left:0;
+                right: 0;
+                bottom: 0;
+                background-color: white;
+                opacity: 0.72;
+                display: flex;
+                align-items: center;
+                z-index: 1;
+                justify-content: center;
+            }
+        </style>
+        <div class="container">
+           <template is="dom-repeat" items="{{items}}" as="item">
+               <div class$="{{_computeClass(index)}} parent-node">
+                   <actindo-tree-node id="root" items="[[item]]" show-default-icon="[[showDefaultIcon]]"></actindo-tree-node>
+               </div>
+           </template>
+           <template is="dom-if" if="[[_loading]]">
+               <div class="loading">
+                   <paper-spinner-lite active></paper-spinner-lite>
+               </div>
+           </template>
+        </div>
+
+    </template>
+
+    <script>
+        class ActindoTree extends ActindoTreeRemoteMixin(Polymer.Element) {
+            static get is() { return 'actindo-tree'; }
+            static get properties() {
+                return Object.assign({}, super.properties, {
+                    /**
+                     * items
+                     * Contains all the items; filled either by remote request or if no remote is given by parameter
+                     * Data hold by the root node (contains the children).
+                     *
+                     * Specific item:
+                     *
+                     * - `item.name`: string representing the node name.
+                     * - `item.icon`: string telling which icon to use (default to 'folder' icon).
+                     * - `item.open`: boolean telling whether the node is expanded or not.
+                     * - `item.children` array containing the children of the node.
+                     */
+
+                    /**
+                    * `showDefaultIcon` is a option for showing the default icon for tree node
+                    */
+                    showDefaultIcon: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * `selectedNode` is the current selected node `<actindo-tree-node>` in the tree.
+                     */
+                    selectedNode: {
+                        type: Object,
+                        value: null,
+                        notify: true
+                    },
+
+                    /**
+                     * `selected` is the current selected item  in the tree.
+                     */
+                    selected: {
+                        type: Object,
+                        value: null,
+                        notify: true
+                    },
+
+                    /**
+                     * current page we are on
+                     */
+                    node: {
+                        type: Number,
+                        value: 0,
+                    },
+                });
+            }
+
+
+            /**
+             * Set the default request param
+             */
+            _getDefaultRequestParams()
+            {
+                return {
+                    node: this.node || 0,
+                    ignorePluginGroups: true
+                };
+            }
+
+            ready() {
+                super.ready();
+                this.addEventListener('select', e => this._setSelectNode(e));
+            }
+
+            /**
+             * Compute the necessary border bottom
+             */
+            _computeClass(index)
+            {
+                if (this.items.length - 1 === index) {
+                    return 'last';
+                }
+                return '';
+            }
+
+            /**
+             * Called when the `select` event is fired from an internal node.
+             *
+             * @param {object} e An event object.
+             */
+            _setSelectNode(e) {
+                if (this.selectedNode) {
+                    this.selectedNode.classList.toggle("selected", false);
+                }
+                // Only selects `<paper-tree-node>`.
+                if (e.detail && e.detail.tagName === 'ACTINDO-TREE-NODE') {
+                    this.selectedNode = e.detail;
+                    this.selectedNode.classList.toggle("selected", true);
+                    this.selected = e.detail.items;
+                } else {
+                    this.selectedNode = null;
+                }
+            };
+        };
+        window.customElements.define(ActindoTree.is, ActindoTree);
+    </script>
+
+</dom-module>

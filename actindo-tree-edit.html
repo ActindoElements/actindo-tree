@@ -1,0 +1,249 @@
+<!--
+`<actindo-tree-edit>` Allow loading and editing tree data.
+
+### Features
+
+- remote loading of data
+- static data display
+- create, edit, modify tree node
+
+-->
+
+<link rel="import" href="actindo-tree-column.html">
+<dom-module id="actindo-tree-edit">
+    <template>
+        <style>
+            .panel
+            {
+                position: relative;
+                --header-container-style:
+                {
+                    background-color: var(--actindo-primary);
+                    color: #fff;
+
+                };
+                --header-style: {
+                    opacity: 1;
+                };
+                --content-style: {
+                    padding: 0;
+                    @apply(--actindo-tree-edit-content);
+                };
+            }
+
+            actindo-form,
+            form
+            {
+                height: 100%;
+                overflow: hidden;
+            }
+
+            .header
+            {
+                background-color: var(--actindo-primary);
+                color: #fff;
+                flex-basis: 64px;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding-right: 8px;
+            }
+
+            .header-left
+            {
+                display: flex;
+                align-items: center;
+            }
+
+            .header span
+            {
+                @apply(--font-title);
+                opacity: 0.7;
+                @apply(--header-style);
+            }
+
+            .header paper-button
+            {
+                color: var(--actindo-primary);
+                background-color: white;
+            }
+        </style>
+
+        <iron-a11y-keys id="a11y" keys="esc" on-keys-pressed="onKeysPressed" stop-keyboard-event-propagation="true">
+            <actindo-basic-panel
+                no-toolbar="[[noToolbar]]"
+                no-default-toolbar="[[noDefaultToolbar]]"
+                class="panel"
+                no-default-header
+                on-save="_save"
+                on-cancel="_cancel"
+            >
+                <div class="header" slot="header">
+                    <div class="header-left">
+                        <template is="dom-if" if="[[!noBackIcon]]">
+                            <paper-icon-button on-click="_cancel" icon="chevron-left" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
+                        </template>
+                        <span>[[title]]</span>
+                    </div>
+                    <paper-button hidden$="[[hideAddButton]]"raised on-click="showAddingOverlay" id="add" >Add</paper-button>
+                </div>
+
+                <actindo-tree-column
+                    id="column"
+                    class="content"
+                    slot="content"
+                    adding="{{adding}}"
+                    selected="{{selected}}"
+                    items="{{items}}"
+                    name-field="[[nameField]]"
+                    changed="{{changed}}"
+                    show-dialog="{{showDialog}}"
+                    max-depth="{{maxDepth}}"
+                    level="1"
+                    item-order-path="{{itemOrderPath}}"
+                >
+                </actindo-tree-column>
+            </actindo-basic-panel>
+        </iron-a11y-keys>
+    </template>
+    <script>
+        class ActindoTreeEdit extends ActindoTreeRemoteMixin(Polymer.Element)
+        {
+            static get is()
+            {
+                return "actindo-tree-edit";
+            }
+
+            static get properties() {
+                return Object.assign({}, super.properties, {
+                    selected: {
+                        type: Object
+                    },
+                    adding: {
+                        type: Boolean,
+                        value: false,
+                        notify: true,
+                    },
+                    waiting: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    noBackIcon: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    hideAddButton: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    noDefaultToolbar: {
+                        type: Boolean,
+                        value: false
+                    },
+                    nameField: {
+                        type: String,
+                        value: 'name'
+                    },
+                    noToolbar: {
+                        type: Boolean,
+                        value: false
+                    },
+                    showDialog: {
+                        type: Boolean,
+                        value: false,
+                    },
+                    changed: {
+                        type: Object,
+                        value: function () {
+                            return {
+                                created: [],
+                                deleted: [],
+                                modified: []
+                            }
+                        }
+                    },
+                    remoteSubmit: {
+                        type: String
+                    },
+                    title: {
+                        type: String,
+                    },
+                    maxDepth: {
+                        type: Number
+                    },
+                    itemOrderPath: {
+                        type: String,
+                    }
+                });
+            }
+
+            showAddingOverlay()
+            {
+                this.adding = true;
+            }
+
+            static get observers() {
+                return [
+                    '_onTreeChanged(changed.*)'
+                ]
+            }
+
+            resetState()
+            {
+                this.waiting = false;
+                this.adding = false;
+                this.selected = {};
+                this.showDialog = false;
+                this.changed = {
+                   created: [],
+                   deleted: [],
+                   modified: []
+                }
+            }
+
+            _onTreeChanged(event)
+            {
+                const data = event.base;
+                this.dispatchEvent( new CustomEvent("tree-changed", {detail: data }));
+            }
+            _save()
+            {
+
+                if (this.remoteSubmit) {
+                    this.waiting = true;
+                    fetch(this.remoteSubmit, {
+                       method: 'POST',
+                       credentials: 'same-origin',
+                       body: this._serialize( this.changed )
+                    }).then( function(response){
+                          return response.json()
+                    } ).then(() => {
+                        this.waiting = false;
+                        this.resetState();
+                        this.dispatchEvent( new CustomEvent("submit", {detail: this.changed }));
+                    });
+                    return;
+                }
+                this.dispatchEvent( new CustomEvent("submit", {detail: this.changed }));
+                this.resetState();
+            }
+
+            onKeysPressed(e)
+            {
+                if(e && e.hasOwnProperty('detail') && e.detail.keyboardEvent && e.detail.keyboardEvent.code === 'Escape') {
+                    this.showDialog = false;
+                    this.adding = false;
+                }
+            }
+
+            _cancel()
+            {
+
+                this.dispatchEvent( new CustomEvent("cancel", {detail: {} }));
+                this.resetState();
+            }
+
+        }
+        customElements.define(ActindoTreeEdit.is, ActindoTreeEdit);
+    </script>
+</dom-module>

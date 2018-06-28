@@ -1,0 +1,198 @@
+ <script>
+    ActindoTreeRemoteMixin = function(superClass) {
+        return class extends superClass {
+
+            static get properties() {
+                return {
+                    items: {
+                        type: Array,
+                        value: function() {return [];},
+                        observer: "onItemsChange",
+                        notify: true
+                    },
+                    /**
+                    * Contains the url from where the data is obtained
+                    */
+                    remote: {
+                       type: String,
+                       value: "",
+                       observer: "_onRemoteChanged"
+                    },
+
+                    /**
+                    * Params that are sent when remote data is loaded
+                    */
+                    remoteParams: {
+                       type: Object,
+                       value: {},
+                       observer: "_onRemoteParamsChanged"
+                    },
+
+                    /**
+                    * Determines which field of the response is contains the items
+                    */
+                    remotePathData: {
+                       type: String,
+                       value: "children"
+                    },
+
+                    /**
+                    * Determines if the box is automatically loading from remote
+                    */
+                    autoLoad: {
+                       type: Boolean,
+                       value: false
+                    },
+
+                    /**
+                    * True if combobox is currently loading
+                    * @private
+                    */
+                    _loading: {
+                       type: Boolean,
+                       value: false
+                    },
+
+                    /**
+                    * Amount of active transactions
+                    * @private
+                    */
+                    _loadingCount: {
+                       type: Number,
+                       value: 0,
+                       observer: "_onLoadingCountChanged"
+                    },
+                }
+            }
+
+            /**
+             * Called whenever the data is changed.
+             */
+            onItemsChange(newValue) {
+            };
+           /**
+            * Determines if there is currently an active call
+            *
+            * @param {Number} newValue
+            * @param {Number} oldValue
+            */
+           _onLoadingCountChanged(newValue, oldValue)
+           {
+               this._loading = newValue !== 0;
+           }
+
+           /**
+            * Called when remote is changed
+            *
+            * @param {String} newValue
+            * @private
+            */
+           _onRemoteChanged(newValue)
+           {
+               if( newValue !== "" && this.autoLoad )
+               {
+                   this.load();
+               }
+           }
+
+           /**
+            * reload when params have been changed
+            *
+            * @param {Object} newValue
+            * @private
+            */
+           _onRemoteParamsChanged( newValue )
+           {
+               this._selectedItem = null;
+               if( this.autoLoad )
+                   this.load();
+           }
+
+           /**
+            * Trigger load data
+            * Debounces because of quasi simultaneously changed values of itemsPerPaged and param for example or multiple page changes
+            */
+           load()
+           {
+               let me = this;
+               this._debouncer = Polymer.Debouncer.debounce(this._debouncer,
+                   Polymer.Async.timeOut.after(300),
+                   () => { me._load() });
+           }
+
+           /**
+            * takes the given object and creates an http query string from it
+            * usage: let str = _serialize({foo: 'bar', baz: ['a', 'b']}); => 'foo=bar&baz[0]=a&baz[1]=b'
+            *
+            * @param {Object} obj the object to serialize
+            * @param {String} prefix internal only (used in recursive calls for nested objects)
+            * @returns {String}
+            * @private
+            */
+           _serialize(obj, prefix) {
+               var str = [], p;
+               for(p in obj) {
+                   if (obj.hasOwnProperty(p)) {
+                       var k = prefix ? prefix + "[" + p + "]" : p, v = obj[p];
+                       str.push((v !== null && typeof v === "object") ?
+                           this._serialize(v, k) :
+                           encodeURIComponent(k) + "=" + encodeURIComponent(v));
+                   }
+               }
+               return str.join("&");
+           }
+
+           _getDefaultRequestParams()
+           {
+                return {};
+           }
+
+           _processData(items)
+           {
+               return items;
+           }
+
+           /**
+            * Loads the data from remote
+            * @private
+            */
+           _load()
+           {
+
+               if( this.remote === "" ) //Of course only with remote set
+               {
+                   return;
+               }
+               let me = this;
+               //Lets build our request
+               let request = Object.assign({},this.remoteParams);
+               if( this.searchValue !== "" && this.remoteSearch ) {
+                   request.fields = [this.valueField, this.displayField];
+                   request.query = this.searchValue;
+               }
+
+               const defaultRequestParams = this._getDefaultRequestParams();
+               request = Object.assign({}, defaultRequestParams, request);
+
+               ++this._loadingCount; //We need this for loading overlay
+
+               fetch(this.remote, {
+                   method: 'POST',
+                   credentials: 'same-origin',
+                   body: this._serialize( request )
+               }).then( function(response){
+                   return response.json()
+               } ).then( function(json){
+
+                   let items = Polymer.Path.get(json,me.remotePathData);
+                   items = me._processData(items);
+                   me.set("items", items);
+                   --me._loadingCount;
+               } ).catch( function(error){
+                   --me._loadingCount;
+                   console.error("Error loading data", error);
+               } );
+           }
+         }
+   }
+</script>
