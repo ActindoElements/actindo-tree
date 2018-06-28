@@ -290,17 +290,6 @@
                     }
                 });
             }
-
-             static get observers() {
-                return [
-                    '_onColumnsChanged(items.*)',
-                ];
-            }
-
-            _onColumnsChanged(items){
-                console.log(items.base);
-            }
-
             _sort(a, b)
             {
                 if (!this.itemOrderPath)
