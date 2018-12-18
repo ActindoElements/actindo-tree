@@ -1,8 +1,11 @@
-<link rel="import" href="../../bower_components/polymer/polymer.html">
-<link rel="import" href="../../bower_components/iron-icon/iron-icon.html">
-<link rel="import" href="../../bower_components/iron-icons/iron-icons.html">
-<link rel="import" href="../../bower_components/paper-icon-button/paper-icon-button.html">
-<link rel="import" href="../../bower_components/paper-item/paper-item.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/polymer/polymer.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/iron-icon/iron-icon.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/iron-icons/iron-icons.html">
+
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/paper-menu-button/paper-menu-button.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/paper-icon-button/paper-icon-button.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/paper-listbox/paper-listbox.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/paper-item/paper-item.html">
 
 <!--
 `<paper-tree-node>` display a tree node with expandable/collapsible capabilities and actions menu.
@@ -19,38 +22,25 @@ Custom property | Description | Default
 `--paper-tree-icon-theme`                     | Change theme for node icon                  |
 @demo
 -->
-
 <dom-module id="actindo-tree-node">
     <template>
         <style>
             :host(.selected) > .node-container > .node-row {
-                background-color: var(--paper-tree-selected-background-color, rgba(200, 200, 200, 0.5));
-                color: var(--paper-tree-selected-color, inherit);
+                color: var(--actindo-primary);
+                @apply(--tree-node-styles);
             }
-			:host(.selected) > .node-container > .node-row > #actions {
-				display: inline-block;
-			}
-
-            .node-container.level-1 {
+		    .node-container.level-1 {
                 @apply(--actindo-tree-node-container);
             }
             .node-row {
-                padding: 0.6em 4px;
+                padding: 4px 20px;
                 display: flex;
                 align-items: center;
-            }
-            .node-row:hover {
-                background-color: var(--paper-tree-selected-background-color, rgba(200, 200, 200, 0.5));
-                color: var(--paper-tree-selected-color, inherit);
-            }
-            .child-node .node-row
-            {
-                padding: 0.6em 2.6em;
+                cursor: pointer;
             }
             .node-preicon.collapsed,
             .node-preicon.expanded {
                 padding-left: 0px;
-                margin-right: 5px;
             }
             .node-preicon.expanded
             {
@@ -60,14 +50,9 @@ Custom property | Description | Default
             {
                 color: var(--actindo-secondary);
                 opacity: 0.72;
-
-            }
-            .node-preicon {
-                padding-left: 18px;
             }
 
             .node-preicon, .node-name {
-                cursor: pointer;
                 display: flex;
                 height: 24px;
                 align-items: center;
@@ -77,16 +62,10 @@ Custom property | Description | Default
                 width: 100%;
             }
             .node-icon {
-                cursor: pointer;
                 width: 24px;
                 height: 24px;
-                @apply(--paper-tree-icon-theme);
-            }
-            #actions {
-                display: none;
-                float: right;
-                padding: 0;
-                top: -8px; /* cancel the padding of `paper-icon-button`. */
+                margin-right: 5px;
+
             }
             ul {
                 margin: 0;
@@ -102,20 +81,118 @@ Custom property | Description | Default
             {
                 padding-left: 4px;
             }
+            paper-checkbox
+            {
+                margin-left: 5px;
+                pointer-events: none;
+                --paper-checkbox-unchecked-color: rgba(85, 95, 97, 0.7);
+            }
+            paper-checkbox[partial]:after {
+                opacity: 1;
+            }
+           .no-expanded
+            {
+                visibility: hidden;
+            }
+            iron-icon
+            {
+                opacity: 0.7;
+            }
+            .selector {
+                position: relative;
+            }
+            .selector:after {
+                background: #000;
+                content: "";
+                display: block;
+                font-weight: bold;
+                height: 2px;
+                left: 6px;
+                opacity: 0;
+                position: absolute;
+                top: 8px;
+                transition: opacity 200ms;
+                width: 6px;
+            }
+            .selector[partial]:after {
+                opacity: 1;
+            }
         </style>
-
         <div class$="node-container level-[[level]] [[class]]">
-            <div class="node-row">
-                <iron-icon hidden$="{{!_computeNodeIcon(items.*)}}" class$="{{_computeClass(items.*)}}" icon$="{{_computeNodeIcon(items.*)}}" on-click="toggleChildren"></iron-icon>
-                <iron-icon hidden$="{{!_computeIcon(items.icon)}}" class="node-icon" icon$="{{_computeIcon(items.icon)}}" on-click="select"></iron-icon>
-                <span class$="no-children-{{!_computeNodeIcon(items.*)}} node-name" on-click="select">{{items.name}}</span>
+            <div class="node-row"  style$="[[_computeStyle(level)]]" on-click="_onNodeClick">
+                <iron-icon id="toggle" class$="{{_computeClass(item.*, opened)}}" icon$="{{_computeNodeIcon(item.*, opened)}}"></iron-icon>
+                <template is="dom-if" if="[[_isMultiple()]]">
+                    <paper-checkbox class="selector" partial$="[[partiallySelected]]" checked="{{selected}}"></paper-checkbox>
+                </template>
+                <iron-icon hidden$="{{!_computeIcon(item.*)}}" class="node-icon" icon$="{{_computeIcon(item.*)}}"></iron-icon>
+                <span class$="no-children-{{!_computeNodeIcon(item.*)}} node-name">[[_getNodeLabel(item)]]</span>
             </div>
-            <template is="dom-if" if="{{items.open}}">
-                <ul>
-                    <template is="dom-repeat" items="{{items.children}}">
-                        <li>
-                            <actindo-tree-node level="[[_getChildLevel()]]" class="child-node" items="{{item}}" show-default-icon="[[showDefaultIcon]]" actions="{{actions}}"></actindo-tree-node>
-                        </li>
+            <template is="dom-if" if="[[shouldRenderChildren]]">
+                <ul id="children" hidden="[[!opened]]">
+                    <template is="dom-if" if="[[_isMultipleDependentSelection()]]">
+                        <template is="dom-repeat" items="{{item.children}}" as="child">
+                            <li>
+                                <actindo-tree-node
+                                    type="[[type]]"
+                                    on-select="_onChildSelect"
+                                    level="[[_getChildLevel()]]"
+                                    class="child-node"
+                                    item="{{child}}"
+                                    multiple
+                                    parent-selected="{{selected}}"
+                                    selection-mode="[[selectionMode]]"
+                                    selected-nodes="{{selectedNodes}}"
+                                    display-field="[[displayField]]"
+                                    show-default-icon="[[showDefaultIcon]]"
+                                    selected-items="[[selectedItems]]"
+                                    trigger-node-level="{{triggerNodeLevel}}"
+                                    flatten-items="[[flattenItems]]"
+                                    leaves-selectable-only="[[leavesSelectableOnly]]"
+                                ></actindo-tree-node>
+                            </li>
+                        </template>
+                    </template>
+                    <template is="dom-if" if="[[_isMultipleInDependentSelection()]]">
+                        <template is="dom-repeat" items="{{item.children}}" as="child">
+                            <li>
+                                <actindo-tree-node
+                                    type="[[type]]"
+                                    on-select="_onChildSelect"
+                                    level="[[_getChildLevel()]]"
+                                    class="child-node"
+                                    item="{{child}}"
+                                    multiple
+                                    display-field="[[displayField]]"
+                                    selection-mode="[[selectionMode]]"
+                                    selected-nodes="{{selectedNodes}}"
+                                    show-default-icon="[[showDefaultIcon]]"
+                                    selected-items="[[selectedItems]]"
+                                    leaves-selectable-only="[[leavesSelectableOnly]]"
+                                    flatten-items="[[flattenItems]]"
+                                ></actindo-tree-node>
+                            </li>
+                        </template>
+                    </template>
+                    <template is="dom-if" if="[[!_isMultiple()]]">
+                        <template is="dom-repeat" items="{{item.children}}" as="child">
+                            <li>
+                                <actindo-tree-node
+                                    type="[[type]]"
+                                    on-select="_onChildSelect"
+                                    level="[[_getChildLevel()]]"
+                                    class="child-node"
+                                    item="{{child}}"
+                                    multiple="[[multiple]]"
+                                    display-field="[[displayField]]"
+                                    allow-deselect="[[allowDeselect]]"
+                                    selected-nodes="{{selectedNodes}}"
+                                    show-default-icon="[[showDefaultIcon]]"
+                                    selected-items="[[selectedItems]]"
+                                    leaves-selectable-only="[[leavesSelectableOnly]]"
+                                    flatten-items="[[flattenItems]]"
+                                ></actindo-tree-node>
+                            </li>
+                        </template>
                     </template>
                 </ul>
             </template>
@@ -127,66 +204,122 @@ Custom property | Description | Default
             static get properties() {
                 return {
                     /**
-                     * Contains all the items; filled either by remote request or if no remote is given by parameter
                      * Data hold by the root node (contains the children).
                      *
                      * Specific item:
                      *
                      * - `item.name`: string representing the node name.
                      * - `item.icon`: string telling which icon to use (default to 'folder' icon).
-                     * - `item.open`: boolean telling whether the node is expanded or not.
                      * - `item.children` array containing the children of the node.
                      */
-                    items: {
+                    item: {
                         type: Array,
                         value: function() {return [];},
-                        observer: "onItemsChange",
                         notify: true
                     },
-
+                    /**
+                     * current node level
+                     */
                     level: {
                         type: Number,
-                        value: 1,
+                        value: 1
                     },
-
+                    selectionMode: {
+                        type: String,
+                        value: 'dependent'
+                    },
                     showDefaultIcon: {
-                        type: Boolean,
+                        type: Boolean
                     },
-                    /**
-                     * `actions` available for this node. Each action object has the following fields:
-                     *
-                     * - `action.label`: string representing the display name of the menu item.
-                     * - `action.event`: string which is the event name to dispatch whenever the item is clicked.
-                     *
-                     */
-                    actions: {
-                        type: Array,
-                        value: function () {
-                            return null;
-                        }
-                    },
-
                     class: {
                         type: String
-                    }
+                    },
+                    /**
+                     * Selection Mode of tree
+                     */
+                    type: {
+                        type: String,
+                        value: 'single'
+                    },
+                    selected: {
+                        type: Boolean,
+                        value: false,
+                        observer: '_onSelectedChanged'
+                    },
+                    parentSelected: {
+                        type: Boolean,
+                        value: false,
+                        observer: '_onParentSelectedChanged'
+                    },
+                    /**
+                     * property that indicates if a partial selection is active (at least one item, but not all)
+                     */
+                    partiallySelected: {
+                        type: Boolean,
+                        value: false
+                    },
+                    multiple: {
+                        type: Boolean,
+                        value: false
+                    },
+                    selectedItems: {
+                        type: Array,
+                        observer: "_onSelectedItemsChanged"
+                    },
+                    selectedNodes: {
+                        type: Array,
+                        notify: true,
+                        value: function() { return [] }
+                    },
+                    triggerNodeLevel: {
+                        type: Number,
+                        notify: true
+                    },
+                    shouldRenderChildren: {
+                        type: Boolean,
+                        value: false
+                    },
+                    opened: {
+                        type: Boolean,
+                        value: false
+                    },
+                    displayField: {
+                        type: String,
+                        value: 'name'
+                    },
+                    flattenItems: {
+                        type: Array,
+                    },
+                    parentIcon: {
+                        type: String,
+                        value: 'tree:multi-folders'
+                    },
+                    leafIcon: {
+                        type: String,
+                        value: 'tree:folder'
+                    },
+                    noIcon: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * Allow only leaf nodes are selectable
+                     */
+                    leavesSelectableOnly: {
+                        type: Boolean,
+                        value: false
+                    },
+                    allowDeselect: {
+                        type: Boolean,
+                        value: false
+                    },
                 }
-            };
-            constructor() {
-                super();
             }
-            ready() {
-                super.ready();
 
-            }
             /**
-             * The `select` event is fired whenever `select()` is called on the node.
+             * The `select` event is fired whenever `_select()` is called on the node.
              *
              * @event select
-             */
-            /**
-             * The `toggle` event is fired whenever a tree node is expanded or collapsed.
-             *
-             * @event toggle
              */
             /**
              * Returns the necessary classes.
@@ -194,15 +327,29 @@ Custom property | Description | Default
              * @param {object} change An object containing the property that changed and its value.
              * @return {string} The class name indicating whether the node is open or closed
              */
-            _computeClass(change) {
-                var open = change && change.base && change.base.open;
+            _computeClass(change, open) {
                 var children = change && change.base && change.base.children;
-                return 'node-preicon ' + ((open && children && children.length) ? 'expanded' : children && children.length ? 'collapsed' : '');
+                return 'node-preicon ' + ((open && children && children.length) ? 'expanded' : children && children.length ? 'collapsed' : 'no-expanded');
             };
 
-            onItemsChange(newValue)
+            _isMultiple()
             {
+                return this.multiple;
+            }
 
+            _isMultipleDependentSelection()
+            {
+                return this.multiple && this.selectionMode === 'dependent';
+            }
+
+            _isMultipleInDependentSelection()
+            {
+                return this.multiple && this.selectionMode === 'independent';
+            }
+
+            _computeStyle(level)
+            {
+                return `padding-left: ${(level-1) * 20}px`;
             }
 
             _getChildLevel()
@@ -210,60 +357,208 @@ Custom property | Description | Default
                 return this.level + 1;
             }
 
+            _onParentSelectedChanged(selected)
+            {
+                if (this.triggerNodeLevel && this.triggerNodeLevel >= this.level)
+                {
+                    return;
+                }
+                this.selected = selected;
+                if (!selected)
+                {
+                    this.classList.remove("selected");
+                }
+                else
+                {
+                    this.classList.add("selected");
+                }
+            }
+
+            _onSelectedChanged(selected)
+            {
+                const index = this.selectedNodes.indexOf(this);
+
+                if (!selected && index >= 0)
+                {
+                    this.classList.remove("selected");
+                    this.splice('selectedNodes', index, 1);
+                }
+                if (selected && index < 0)
+                {
+                    this.partiallySelected = false;
+                    this.classList.add("selected");
+                    this.push('selectedNodes', this);
+                }
+            }
+
+            _onSelectedItemsChanged(selectedItemsNew, selectedItemsOld)
+            {
+                let selectedNodes = this.selectedNodes;
+                if (this._isMultipleDependentSelection())
+                {
+                    selectedNodes = selectedNodes.filter(node => !node.parentSelected || !node.item.parent);
+                }
+                // selectedNodes = selectedNodes.filter(node => selectedItemsNew.includes(node.item));
+                if (selectedNodes.length === selectedItemsNew.length)
+                {
+                    return;
+                }
+
+                if (selectedItemsNew.indexOf(this.item) >= 0)
+                {
+                    this.setNodeStatus(!this.selected);
+                }
+                else
+                {
+                    if (this.opened)
+                    {
+                        return;
+                    }
+                    selectedItemsNew.find(selectedItem => {
+                        const path = this.flattenItems[selectedItem.id].path;
+                        const nodeIds = path.toString().split('__');
+                        if (nodeIds.includes(this.item.id.toString()))
+                        {
+                            this.set('shouldRenderChildren', true);
+                            this.set('opened', true);
+                            return true;
+                        }
+
+                    });
+                }
+            }
             /**
              * Returns the necessary icon name.
              *
              * @param {object} change An object containing the property that changed and its value.
              * @return {string} The icon name indicating whether the node is open or closed
              */
-            _computeNodeIcon(change) {
-                var open = change && change.base && change.base.open;
+            _computeNodeIcon(change, open) {
                 var children = change && change.base && change.base.children;
-                return ((open && children && children.length) ? 'icons:remove-circle' : children && children.length ? 'icons:add-circle' : '');
+                return ((open && children && children.length) ? 'tree:expand-more' : children && children.length ? 'tree:expand-less' : '');
             };
+
             /**
              * Compute the necessary node icon.
              *
              * @param {string=folder} an icon name.
              * @return {string} the computed icon name.
              */
-            _computeIcon(icon) {
-                if (this.showDefaultIcon) {
-                    return icon ? icon : 'folder';
+            _computeIcon(change) {
+                if (this.noIcon)
+                {
+                    return '';
                 }
-                return icon;
+                var children = change && change.base && change.base.children;
+                if (children && children.length > 0)
+                {
+                    return this.parentIcon;
+                }
+                return this.leafIcon;
             };
-            _actionClicked(event) {
-                this.dispatchEvent(new CustomEvent(event.model.item.event, { detail: this }));
-            };
-            /**
-             * Highlights node as the selected node.
-             */
-            select() {
-                this.dispatchEvent(new CustomEvent('select', { bubbles: true, composed: true, detail: this, items: this.items }));
-            };
+
+            _onChildSelect(event)
+            {
+                if (!this._isMultipleDependentSelection())
+                {
+                    this.set('opened', true);
+                    this.dispatchEvent(new CustomEvent('select', { detail: event.detail, item: event.item }));
+                    return;
+                }
+
+                const selectedItems = this.selectedNodes.map(node => node.item);
+                const selectedChildren = this.item.children.filter(child => selectedItems.includes(child) );
+                const partiallySelectedChildren = this.item.children.filter( child => child.partiallySelected );
+                if (selectedChildren.length + partiallySelectedChildren.length  === 0)
+                {
+                    this.partiallySelected = false;
+                    this.item.partiallySelected = false;
+                    this.selected = false;
+                }
+                else if (selectedChildren.length === this.item.children.length)
+                {
+                    this.partiallySelected = false;
+                    this.item.partiallySelected = false;
+                    this.selected = true;
+                }
+                else
+                {
+                    this.partiallySelected = true;
+                    this.item.partiallySelected = true;
+                    this.selected = false;
+                }
+                this.dispatchEvent(new CustomEvent('select', { detail: event.detail, item: event.item }));
+            }
+
+            _onNodeClick(e)
+            {
+                // In Multi selection mode, do not change the status of node when clicking on toggle button
+                // In Single selection mode, if non-leafs are selectable, only expand when clicking on the arrow otherwise just select
+                if (e.target && e.target.id === 'toggle' && (this._isMultiple() || !this.leavesSelectableOnly))
+                {
+                    this.set("shouldRenderChildren", true);
+                    this.set("opened", !this.opened && this.item.children && this.item.children.length);
+                    return;
+                }
+
+                if (e.target && e.target.id !== 'toggle')
+                {
+                    this.triggerNodeLevel = this.level;
+                }
+                this.setNodeStatus(!this.selected);
+            }
+
+            setNodeStatus(selected)
+            {
+                // Show/Hide the children nodes when click node row
+                if (!this._isMultiple())
+                {
+                    if (this.leavesSelectableOnly && this.item.children && this.item.children.length)
+                    {
+                        this.set("opened", !this.opened );
+                        this.set("shouldRenderChildren", true);
+                        return;
+                    }
+                    if (this.selectedNodes.length && selected)
+                    {
+                        if( this.selectedNodes[0] !== this || !this.allowDeselect  )
+                        {
+                            this.selectedNodes[0].selected = !this.selectedNodes[0].selected; //if this line is not execute in the following statement the current node gets deselected
+                        }
+                    }
+
+                    this.selected = !this.selected; //select new node or when clicking on same potentially deselect the current selected node
+                    this.dispatchEvent(new CustomEvent('select', { detail: this, item: this.item}));
+                    return;
+                }
+                this.partiallySelected = false;
+                this.selected = selected;
+
+                this.dispatchEvent(new CustomEvent('select', { detail: this, item: this.item}));
+            }
+
+            _getNodeLabel(item)
+            {
+                return Polymer.Path.get(item, this.displayField);
+            }
+
             /**
              * Returns the parent tree node. Returns `null` if root.
              */
             getParent() {
+                if( this.getRootNode().host === undefined )
+                {
+                    return null;
+                }
                 return this.getRootNode().host.tagName === 'ACTINDO-TREE-NODE' ? this.getRootNode().host : null;
             };
+
             /**
              * Returns the children tree nodes.
              */
             getChildren() {
                 return this.root.querySelectorAll('actindo-tree-node');
             };
-            /**
-             * Display/Hide the children nodes.
-             */
-            toggleChildren() {
-                this.set("items.open", !this.items.open && this.items.children && this.items.children.length);
-                //Todo: the 1.0 version had: setTimeout(this.fire.bind(this, "toggle", this));
-                //Is this translation correct?
-                setTimeout(this.dispatchEvent(new CustomEvent('toggle', { bubbles: true, composed: true, detail: this })));
-            };
-
         };
         window.customElements.define(ActindoTreeNode.is, ActindoTreeNode);
     </script>

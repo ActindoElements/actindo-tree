@@ -42,6 +42,12 @@
             {
                 display: none;
             }
+
+            .btn-delete
+            {
+                padding: 0;
+            }
+
             .editing-true .dialog-header
             {
                 display: none;
@@ -74,6 +80,9 @@
                 font-size: 0.9em;
             }
 
+            paper-icon-button[hidden] {
+                visibility: hidden;
+            }
 
         </style>
         <iron-a11y-keys id="a11y" keys="enter" on-keys-pressed="onEnterPressed">
@@ -88,21 +97,25 @@
                         autofocus
                         value="{{name}}"
                         label="Name"
+                        disabled="[[ _isDisabledNameChange(data) ]]"
                     >
                     </paper-input>
                     <paper-input
                         value="{{key}}"
                         label="Key"
+                        disabled="[[ _isDisabledKeyChange(data) ]]"
                     >
                     </paper-input>
                 </div>
               <div class="buttons">
-                <paper-icon-button hidden$="[[!editing]]" class="btn-delete" on-click="delete" icon="delete" >
+
+                <paper-icon-button hidden="[[ _isHiddenDeleteButton(data) ]]" class="btn-delete" on-click="delete" icon="delete" >
                 </paper-icon-button>
                 <div>
                     <paper-button dialog-dismiss on-click="cancel" id="cancel" >Cancel</paper-button>
                     <paper-button dialog-confirm disabled="[[disabled]]" raised on-click="submit" id="save" class="save">Save</paper-button>
                 </div>
+
               </div>
             </paper-dialog>
         </iron-a11y-keys>
@@ -145,9 +158,27 @@
                         type: String,
                         value: ''
                     },
+                    readOnly: {
+                        type: Boolean,
+                    },
                     disabled: {
                         type: Boolean,
                         computed: '_getDisabled(name)'
+                    },
+                    disableKeyChange: {
+                        type: Boolean,
+                    },
+                    disableKeyChangeForReadOnly: {
+                        type: Boolean,
+                    },
+                    disableNameChangeForReadOnly: {
+                        type: Boolean,
+                    },
+                    disableDelete: {
+                        type: Boolean,
+                    },
+                    disableDeleteForReadOnly: {
+                        type: Boolean,
                     }
                 }
             }
@@ -172,6 +203,36 @@
                 this.name = this.data[this.nameField];
                 this.key = this.data.key;
                 this.$.alignedDialog.open();
+            }
+
+            _isDisabledNameChange(item)
+            {
+                if(item.id > 0)
+                {
+                    return this.disableNameChangeForReadOnly && item.readOnly;
+                }
+
+                return false;
+            }
+
+            _isDisabledKeyChange(item)
+            {
+                if((item.id > 0) && this.disableKeyChangeForReadOnly)
+                {
+                    return item.readOnly;
+                }
+
+                return (item.id > 0) && this.disableKeyChange;
+            }
+
+            _isHiddenDeleteButton(item)
+            {
+                if((item.id > 0) && this.disableDeleteForReadOnly)
+                {
+                    return item.readOnly;
+                }
+
+                return (item.id > 0) && this.disableDelete;
             }
 
             reset()
@@ -202,7 +263,6 @@
                     this.$.alignedDialog.close();
                 }
             }
-
         }
         customElements.define(ActindoTreeDetailDialog.is, ActindoTreeDetailDialog);
     </script>

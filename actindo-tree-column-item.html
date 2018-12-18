@@ -115,6 +115,21 @@
                     },
                     title: {
                         type: String
+                    },
+                    disableKeyChange: {
+                        type: Boolean,
+                    },
+                    disableKeyChangeForReadOnly: {
+                        type: Boolean,
+                    },
+                    disableNameChangeForReadOnly: {
+                        type: Boolean,
+                    },
+                    disableDelete: {
+                        type: Boolean,
+                    },
+                    disableDeleteForReadOnly: {
+                        type: Boolean,
                     }
                 }
             }
@@ -148,14 +163,6 @@
                 this.dispatchEvent( new CustomEvent("delete", {detail: this.data }));
             }
 
-            onMouseover()
-            {
-                this.disabledDrag = false;
-            }
-            onMouseout()
-            {
-                this.disabledDrag = true;
-            }
             onEditSubmit(data)
             {
                 this.set('title', data.detail[this.nameField]);

@@ -1,120 +1,122 @@
-<!--
-`<actindo-tree-edit>` Allow loading and editing tree data.
-
-### Features
-
-- remote loading of data
-- static data display
-- create, edit, modify tree node
-
--->
-
 <link rel="import" href="actindo-tree-column.html">
 <dom-module id="actindo-tree-edit">
     <template>
         <style>
-            .panel
+            .container
             {
                 position: relative;
-                --header-container-style:
-                {
-                    background-color: var(--actindo-primary);
-                    color: #fff;
-
-                };
-                --header-style: {
-                    opacity: 1;
-                };
-                --content-style: {
-                    padding: 0;
-                    @apply(--actindo-tree-edit-content);
-                };
+                height: 100%;
+                margin: -16px -24px;
+                height: calc(100% + 32px);
+                overflow: hidden;
+                @apply(--tree-edit-styles);
             }
-
             actindo-form,
             form
             {
                 height: 100%;
                 overflow: hidden;
             }
-
             .header
             {
                 background-color: var(--actindo-primary);
                 color: #fff;
-                flex-basis: 64px;
+                height: 64px;
                 display: flex;
-                justify-content: space-between;
+                justify-content: flex-end;
                 align-items: center;
                 padding-right: 8px;
             }
-
-            .header-left
+            .header[hidden]
             {
-                display: flex;
-                align-items: center;
+                display: none !important;
             }
-
-            .header span
-            {
-                @apply(--font-title);
-                opacity: 0.7;
-                @apply(--header-style);
-            }
-
             .header paper-button
             {
                 color: var(--actindo-primary);
                 background-color: white;
             }
+            ::-webkit-scrollbar {
+                width: 5px;
+                height: 10px;
+                padding-right: 5px;
+            }
+            ::-webkit-scrollbar-track {
+                background: transparent;
+            }
+            ::-webkit-scrollbar-track:hover {
+                background: rgba(0,0,0,0.15);
+            }
+            ::-webkit-scrollbar-thumb {
+                background-color: var(--actindo-secondary-light);
+                border-right: 2px solid var(--actindo-secondary-light);
+                border-left: 2px solid var(--actindo-secondary-light);
+            }
+            ::-webkit-scrollbar-thumb:hover {
+                background-color: var(--actindo-secondary);
+                border-right: 2px solid var(--actindo-secondary);
+                border-left: 2px solid var(--actindo-secondary);
+            }
+            paper-fab {
+                background-color: var(--actindo-primary);
+                color: white;
+                width: 60px;
+                height: 60px;
+                position: absolute;
+                bottom: 16px;
+                right: 16px;
+            }
         </style>
-
-        <iron-a11y-keys id="a11y" keys="esc" on-keys-pressed="onKeysPressed" stop-keyboard-event-propagation="true">
+        <iron-a11y-keys id="a11y" keys="esc" on-keys-pressed="_onKeysPressed" stop-keyboard-event-propagation="true">
             <actindo-basic-panel
                 no-toolbar="[[noToolbar]]"
-                no-default-toolbar="[[noDefaultToolbar]]"
-                class="panel"
-                no-default-header
+                id="panel"
                 on-save="_save"
                 on-cancel="_cancel"
+                no-default-header="[[adding]]"
+                no-cancel-button="[[noDefaultToolbar]]"
+                no-save-button="[[noDefaultToolbar]]"
+                header="[[title]]"
             >
-                <div class="header" slot="header">
-                    <div class="header-left">
-                        <template is="dom-if" if="[[!noBackIcon]]">
-                            <paper-icon-button on-click="_cancel" icon="chevron-left" role="button" tabindex="0" aria-disabled="false"></paper-icon-button>
-                        </template>
-                        <span>[[title]]</span>
+                <slot name="header" slot="header"></slot>
+                <div class="container" slot="content">
+                    <div class="header" hidden$=[[!adding]]>
+                        <paper-button raised on-click="_hideAddingOverlay">Cancel</paper-button>
                     </div>
-                    <paper-button hidden$="[[hideAddButton]]"raised on-click="showAddingOverlay" id="add" >Add</paper-button>
+                    <actindo-tree-column
+                        id="column"
+                        adding="{{adding}}"
+                        selected="{{selected}}"
+                        items="{{items}}"
+                        name-field="[[nameField]]"
+                        changed="{{changed}}"
+                        show-dialog="{{showDialog}}"
+                        max-depth="{{maxDepth}}"
+                        level="1"
+                        disable-key-change="[[disableKeyChange]]"
+                        disable-key-change-for-read-only="[[disableKeyChangeForReadOnly]]"
+                        disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
+                        disable-delete="[[disableDelete]]"
+                        disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
+                        item-order-path="{{itemOrderPath}}"
+                    >
+                    </actindo-tree-column>
+                    <paper-fab on-click="_showAddingOverlay" icon="add"></paper-fab>
                 </div>
-
-                <actindo-tree-column
-                    id="column"
-                    class="content"
-                    slot="content"
-                    adding="{{adding}}"
-                    selected="{{selected}}"
-                    items="{{items}}"
-                    name-field="[[nameField]]"
-                    changed="{{changed}}"
-                    show-dialog="{{showDialog}}"
-                    max-depth="{{maxDepth}}"
-                    level="1"
-                    item-order-path="{{itemOrderPath}}"
-                >
-                </actindo-tree-column>
             </actindo-basic-panel>
+
         </iron-a11y-keys>
     </template>
     <script>
-        class ActindoTreeEdit extends ActindoTreeRemoteMixin(Polymer.Element)
+        class ActindoTreeEdit extends RemoteMixin(Polymer.Element)
         {
             static get is()
             {
                 return "actindo-tree-edit";
             }
 
-            static get properties() {
+            static get properties()
+            {
                 return Object.assign({}, super.properties, {
                     selected: {
                         type: Object
@@ -165,6 +167,12 @@
                     remoteSubmit: {
                         type: String
                     },
+                    name: {
+                        type: String
+                    },
+                    value: {
+                        type: Object
+                    },
                     title: {
                         type: String,
                     },
@@ -173,16 +181,32 @@
                     },
                     itemOrderPath: {
                         type: String,
+                    },
+                    disableKeyChange: {
+                        type: Boolean,
+                        value: false
+                    },
+                    disableKeyChangeForReadOnly: {
+                        type: Boolean,
+                        value: false
+                    },
+                    disableNameChangeForReadOnly: {
+                        type: Boolean,
+                        value: false
+                    },
+                    disableDelete: {
+                        type: Boolean,
+                        value: false
+                    },
+                    disableDeleteForReadOnly: {
+                        type: Boolean,
+                        value: false
                     }
                 });
             }
 
-            showAddingOverlay()
+            static get observers()
             {
-                this.adding = true;
-            }
-
-            static get observers() {
                 return [
                     '_onTreeChanged(changed.*)'
                 ]
@@ -201,15 +225,22 @@
                 }
             }
 
+            _showAddingOverlay()
+            {
+                this.adding = true;
+            }
+
             _onTreeChanged(event)
             {
                 const data = event.base;
+                this.set( "value", data );
                 this.dispatchEvent( new CustomEvent("tree-changed", {detail: data }));
             }
             _save()
             {
 
-                if (this.remoteSubmit) {
+                if (this.remoteSubmit)
+                {
                     this.waiting = true;
                     fetch(this.remoteSubmit, {
                        method: 'POST',
@@ -226,14 +257,24 @@
                 }
                 this.dispatchEvent( new CustomEvent("submit", {detail: this.changed }));
                 this.resetState();
+
             }
 
-            onKeysPressed(e)
+            _onKeysPressed(e)
             {
-                if(e && e.hasOwnProperty('detail') && e.detail.keyboardEvent && e.detail.keyboardEvent.code === 'Escape') {
-                    this.showDialog = false;
-                    this.adding = false;
+                if ( e
+                    && e.hasOwnProperty('detail')
+                    && e.detail.keyboardEvent
+                    && e.detail.keyboardEvent.code === 'Escape' )
+                {
+                    this._hideAddingOverlay();
                 }
+            }
+
+            _hideAddingOverlay()
+            {
+                this.showDialog = false;
+                this.adding = false;
             }
 
             _cancel()
@@ -242,7 +283,6 @@
                 this.dispatchEvent( new CustomEvent("cancel", {detail: {} }));
                 this.resetState();
             }
-
         }
         customElements.define(ActindoTreeEdit.is, ActindoTreeEdit);
     </script>

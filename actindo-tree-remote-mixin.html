@@ -154,6 +154,7 @@
 
            /**
             * Loads the data from remote
+            * @return {Promise}
             * @private
             */
            _load()
@@ -171,9 +172,6 @@
                    request.query = this.searchValue;
                }
 
-               const defaultRequestParams = this._getDefaultRequestParams();
-               request = Object.assign({}, defaultRequestParams, request);
-
                ++this._loadingCount; //We need this for loading overlay
 
                fetch(this.remote, {
@@ -188,6 +186,9 @@
                    items = me._processData(items);
                    me.set("items", items);
                    --me._loadingCount;
+                   me.dispatchEvent(
+                       new CustomEvent( "after-load", {detail:json} )
+                   );
                } ).catch( function(error){
                    --me._loadingCount;
                    console.error("Error loading data", error);
@@ -196,3 +197,4 @@
          }
    }
 </script>
+

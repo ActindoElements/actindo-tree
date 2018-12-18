@@ -1,0 +1,100 @@
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/polymer/polymer.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/paper-spinner/paper-spinner-lite.html">
+<link rel="import" href="actindo-tree-node.html">
+<link rel="import" href="actindo-tree-icons.html">
+<link rel="import" href="actindo-tree-behavior.html">
+<link rel="import" href="actindo-loadable.html">
+<link rel="import" href="../Mixin/remote.html">
+<!--
+`<paper-tree>` display a browsable tree of nodes (`<paper-tree-node>`) with expandable/collapsible capabilities and actions menu for each node.
+Example:
+    <paper-tree></paper-tree>
+@demo
+-->
+
+<dom-module id="actindo-multi-select-tree">
+    <template>
+        <style>
+        </style>
+        <actindo-loadable loading="[[_loading]]">
+            <template is="dom-repeat" items="{{items}}" as="item">
+                <actindo-tree-node
+                    on-select="_setSelectNode"
+                    id="root"
+                    item="[[item]]"
+                    show-default-icon="[[showDefaultIcon]]"
+                    multiple
+                    selection-mode="[[selectionMode]]"
+                    selected-items="[[selectedItems]]"
+                    selected-nodes="{{selectedNodes}}"
+                    flatten-items="[[flattenItems]]"
+                    value-field="[[valueField]]"
+                    display-field="[[displayField]]"
+                >
+                </actindo-tree-node>
+           </template>
+        </actindo-loadable>
+    </template>
+    <script>
+        class ActindoMultiSelectTree extends ActindoTreeMixin(Polymer.Element) {
+            static get is()
+            {
+                return 'actindo-multi-select-tree';
+            }
+
+            static get properties()
+            {
+                return Object.assign({}, super.properties, {
+                    selectionMode: {
+                        type: String,
+                        value: 'dependent'
+                    }
+                });
+            }
+
+            static get observers()
+            {
+                return [
+                   '_init(items)'
+                ]
+            }
+
+            /**
+             * Called when the `select` event is fired from an internal node.
+             *
+             * @param {object} e An event object.
+             */
+            _setSelectNode(e)
+            {
+                if (this.leavesSelectableOnly && (e.detail.item.children && e.detail.item.children.length > 0))
+                {
+                    return;
+                }
+
+                switch (this.selectionMode)
+                {
+                    case 'independent':
+                        this._handleMultiInDependentSelectMode(e);
+                        break;
+                    case 'dependent':
+                        this._handleMultiDependentSelectMode(e);
+                        break;
+                }
+            }
+
+            _handleMultiInDependentSelectMode(e)
+            {
+                this._updateTreeValue(this.selectedNodes);
+            }
+
+            _handleMultiDependentSelectMode(e)
+            {
+                const selectedNodes = this.selectedNodes.filter(node => !node.parentSelected || !node.item.parent);
+
+                this._updateTreeValue(selectedNodes);
+            }
+        };
+        window.customElements.define(ActindoMultiSelectTree.is, ActindoMultiSelectTree);
+    </script>
+
+</dom-module>
