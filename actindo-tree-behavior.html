@@ -1,0 +1,300 @@
+<link rel="import" href="./actindo-tree-remote-mixin.html">
+<script>
+   ActindoTreeMixin = function(superClass)
+   {
+        return class extends ActindoTreeRemoteMixin(superClass)
+        {
+            static get properties()
+            {
+                return Object.assign({}, super.properties, {
+                    /**
+                     * items
+                     * Contains all the items; filled either by remote request or if no remote is given by parameter
+                     * Data hold by the root node (contains the children).
+                     *
+                     * Specific item:
+                     *
+                     * - `item.name`: string representing the node name.
+                     * - `item.icon`: string telling which icon to use (default to 'folder' icon).
+                     * - `item.open`: boolean telling whether the node is expanded or not.
+                     * - `item.children` array containing the children of the node.
+                     */
+
+                    /**
+                    * `showDefaultIcon` is a option for showing the default icon for tree node
+                    */
+                    showDefaultIcon: {
+                        type: Boolean,
+                        value: true
+                    },
+                    /**
+                     * Allow only leaf nodes are selectable
+                     */
+                    leavesSelectableOnly: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * The name of this element.
+                     */
+                    name: {
+                        type: String
+                    },
+                    flattenItems: {
+                        type: Object,
+                        notify: true,
+                        value: function () { return {} }
+                    },
+                    valueField: {
+                        type: String,
+                        value: 'id'
+                    },
+                    displayField: {
+                        type: String,
+                        value: 'name'
+                    },
+                    noFlatten: {
+                        type: Boolean,
+                        value: false
+                    },
+                    selectedItems: {
+                        type: Array,
+                        notify: true,
+                        value: function() { return [] }
+                    },
+                    value: {
+                        type: Array,
+                        observer: '_onValueChanged',
+                        value: function() { return [] },
+                        notify: true
+                    },
+                    parentIcon: {
+                        type: String,
+                        value: 'tree:multi-folders'
+                    },
+                    leafIcon: {
+                        type: String,
+                        value: 'tree:folder'
+                    },
+                    noIcon: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * List of DOM nodes are selected
+                     */
+                    selectedNodes: {
+                        type: Array,
+                        notify: true,
+                        value: function() {return [];}
+                    },
+                    noCloneDeepRemoteData: {
+                        type: Boolean,
+                        value: false
+                    }
+                });
+            }
+
+            _init(items = [])
+            {
+                if (!items || !items.length)
+                {
+                    return;
+                }
+
+                if (!this.noFlatten)
+                {
+                    const flattenItems = this._flattenNodes(items);
+                    this.set('flattenItems', flattenItems);
+                }
+                if (!this.value)
+                {
+                    return;
+                }
+                const value = this.value.filter(v => this.flattenItems[v]);
+                if (this.value.length !== value.length)
+                {
+                    this.set('value', value);
+                }
+                else
+                {
+                    this._onValueChanged(this.value);
+                }
+            }
+
+            _processData(items)
+            {
+                if (this.noCloneDeepRemoteData)
+                {
+                    return items;
+                }
+                const json = JSON.stringify(items);
+                return JSON.parse(json);
+            }
+
+            _onValueChanged(value)
+            {
+                if (!this.items || !this.items.length || !value )
+                {
+                    return;
+                }
+            }
+
+            _onValueChanged(newValue, oldValue)
+            {
+                if (!this.items || !this.items.length)
+                {
+                    return;
+                }
+                if (!this._shouldUpdate(newValue))
+                {
+                    return;
+                }
+
+                this.isOnInit = true;
+
+                const selectedNodes = [...this.selectedNodes];
+                selectedNodes.forEach(node => {
+                    node.setNodeStatus(false);
+                });
+
+                const newSelectedItems = this._getSelectedItemsFromValue(this.items, newValue);
+                this.set('selectedItems', newSelectedItems);
+                if (oldValue !== undefined || (oldValue === undefined && !newValue.length))
+                {
+                    this.isOnInit = false;
+                }
+            }
+
+            _shouldUpdate(value)
+            {
+                const newSelectedItems = this._getSelectedItemsFromValue(this.items, value);
+                const shouldUpdate = newSelectedItems.filter(item => !this.selectedItems.includes(item));
+                if (newSelectedItems.length === this.selectedItems.length && !shouldUpdate.length)
+                {
+                    return false;
+                }
+                return true;
+            }
+
+            _updateTreeValue(selectedNodes)
+            {
+                const notUpdatedValue = selectedNodes.filter(node => !this.value.includes(this._getNodeValue(node.item)));
+                if (this.isOnInit && selectedNodes.length === this.value.length && !notUpdatedValue.length)
+                {
+                    this.isOnInit = false;
+                    return;
+                }
+                if (this.isOnInit)
+                {
+                    return;
+                }
+                const selectedItems = selectedNodes.map(node => node.item);
+                const value = selectedNodes.map(node => this._getNodeValue(node.item));
+                this.setProperties({
+                    value: value,
+                    selectedItems: selectedItems
+                });
+            }
+
+            _getSelectedItemsFromValue(items, value)
+            {
+                if (!value)
+                {
+                    return [];
+                }
+                if (Object.keys(this.flattenItems).length)
+                {
+                    const ret = [];
+                    value.forEach( v => {
+                        if (this.flattenItems[v])
+                        {
+                            ret.push(this.flattenItems[v].item);
+                        }
+                    });
+                    return ret;
+                }
+                var node, stack=[];
+
+                if (!Array.isArray(items))
+                {
+                    return;
+                }
+                let i = 0;
+                const selectedItems = [];
+                items.forEach(item => {
+                    stack.push(item);
+                    while (stack.length > 0) {
+                        node = stack.pop();
+                        const nodeValue = this._getNodeValue(node);
+                        if (this.value.indexOf((nodeValue)) >= 0) {
+                            i++;
+                            selectedItems.push(node);
+                            if (i === this.value.length)
+                            {
+                                break;
+                            }
+                        }
+                        else if (node.children && node.children.length)
+                        {
+                            node.children.forEach(child => {
+                                stack.push(child);
+                                child.parent = node;
+                            });
+                        }
+                    }
+                });
+                return selectedItems;
+            }
+
+            _flattenNodes(items)
+            {
+                if (this.noFlatten)
+                {
+                    return;
+                }
+                const flattenItems = {};
+                var item, stack=[];
+                items.forEach(item => {
+                    stack.push(item);
+                    while (stack.length > 0) {
+                        item = stack.pop();
+                        if (!flattenItems[item.id])
+                        {
+                            flattenItems[item.id] = {
+                                path: item.id,
+                                item: item
+                            }
+                        }
+
+                        if (item.children && item.children.length)
+                        {
+                            const parentPath = flattenItems[item.id].path;
+                            item.children.forEach(child => {
+                                stack.push(child);
+                                child.parent = item;
+                                flattenItems[child.id] = {
+                                    path: `${parentPath}__${child.id}`,
+                                    item: child
+                                }
+                            });
+
+                        }
+
+                    }
+                });
+                return flattenItems;
+            }
+
+            _getNodeLabel(item)
+            {
+                return Polymer.Path.get(item, this.displayField);
+            }
+
+            _getNodeValue(item)
+            {
+                return Polymer.Path.get(item, this.valueField);
+            }
+        }
+   };
+</script>

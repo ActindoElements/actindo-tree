@@ -1,20 +1,16 @@
-<link rel="import" href="../../bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
-<link rel="import" href="actindo-tree-detail-dialog.html">
-<link rel="import" href="actindo-tree-column-item.html">
-<link rel="import" href="../../../Resources/sharedlabs/sortable-list.html">
-<link rel="import" href="actindo-tree-icons.html">
-<link rel="import" href="actindo-tree-remote-mixin.html">
+<link rel="import" href="/Actindo/CoreModules/Start/Resources/app/bower_components/paper-scroll-header-panel/paper-scroll-header-panel.html">
 <link rel="import" href="actindo-tree-resize.html">
-
+<link rel="import" href="actindo-tree-column-item.html">
+<link rel="import" href="actindo-tree-remote-mixin.html">
+<link rel="import" href="actindo-tree-detail-dialog.html">
 <dom-module id="actindo-tree-column">
     <template>
         <style>
             paper-scroll-header-panel,
-            sortable-list,
             paper-scroll-header-panel > div
             {
                 height: auto !important;
-                width: 100%;
+                width: calc(100% - 5px);
             }
 
             actindo-tree-resize
@@ -24,8 +20,9 @@
                 --drag-resize-container: {
                     height: 100%;
                     width: 100%;
-                };
+                }
                 --drag-resize-handle-size: 15px;
+                --drag-resize-right-cursor-pos: 10px;
             }
 
             .column-container
@@ -46,7 +43,6 @@
                 display: flex;
                 flex-direction: column-reverse;
                 right: 0;
-                z-index: 3;
             }
 
             .right iron-icon
@@ -149,7 +145,7 @@
                 <paper-scroll-header-panel>
                     <div slot="content" class="column">
                         <sortable-js class$="hide-[[!items.length]]" on-end="_onSortFinish" handle=".drag-icon" >
-                            <template id="repeat" is="dom-repeat" items="{{items}}" as="item" index-as="i" sort="_sort" observe="sortOrder">
+                            <template is="dom-repeat" items="{{items}}" sort="_sort" as="item">
                                 <actindo-tree-column-item
                                     selected="[[_isSelected(selected, item)]]"
                                     data="{{item}}"
@@ -161,6 +157,11 @@
                                     index="[[index]]"
                                     level="[[level]]"
                                     max-depth="[[maxDepth]]"
+                                    disable-key-change="[[disableKeyChange]]"
+                                    disable-key-change-for-read-only="[[disableKeyChangeForReadOnly]]"
+                                    disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
+                                    disable-delete="[[disableDelete]]"
+                                    disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
                                 >
                                     <iron-icon class="drag-icon" slot="prefix" icon="icons:menu"></iron-icon>
 
@@ -176,12 +177,18 @@
                     on-cancel="cancelAddElement"
                     name-field="[[nameField]]"
                     on-submit="addElement"
+                    disable-key-change="[[disableKeyChange]]"
+                    disable-key-change-for-read-only="[[disableKeyChangeForReadOnly]]"
+                    disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
+                    disable-delete="[[disableDelete]]"
+                    disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
                 ></actindo-tree-detail-dialog>
                 <div id="right" class="right">
                     <iron-icon icon="tree:columnwidth-adjuster"></iron-icon>
                 </div>
             </div>
-        </actindo-tree-resize>
+        </actindo-treeag-icon
+   >
         <template is="dom-if" if="[[expanded]]">
             <actindo-tree-column
                 max-depth="{{maxDepth}}"
@@ -194,13 +201,18 @@
                 adding="{{adding}}"
                 show-dialog="{{showDialog}}"
                 items="[[selected.children]]"
+                disable-key-change="[[disableKeyChange]]"
+                disable-key-change-for-read-only="[[disableKeyChangeForReadOnly]]"
+                disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
+                disable-delete="[[disableDelete]]"
+                disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
             ></actindo-tree-column>
         </template>
 
     </template>
 
     <script>
-        class ActindoTreeColumn extends ActindoTreeRemoteMixin(Polymer.Element)
+        class ActindoTreeColumn extends RemoteMixin(Polymer.Element)
         {
             static get is()
             {
@@ -235,7 +247,7 @@
                     },
                     items: {
                         type: Array,
-                        notify: true,
+                        notify: true
                     },
                     disabledDrag: {
                         type: Boolean,
@@ -264,32 +276,58 @@
                     },
                     itemOrderPath: {
                         type: String
+                    },
+                    disableKeyChange: {
+                        type: Boolean,
+                    },
+                    disableKeyChangeForReadOnly: {
+                        type: Boolean,
+                    },
+                    disableNameChangeForReadOnly: {
+                        type: Boolean,
+                    },
+                    disableDelete: {
+                        type: Boolean,
+                    },
+                    disableDeleteForReadOnly: {
+                        type: Boolean,
                     }
                 });
             }
 
-
-            _reOrderItems(items)
+            _reOrderItems(newIdx)
             {
                 if (!this.itemOrderPath)
                 {
                     return;
                 }
 
-                items.forEach((item, index) => {
-                    item[this.itemOrderPath] = index;
-                    if (item.id > 0)
+                if (this.items.length < 2)
+                {
+                    return;
+                }
+                const length = this.items.length;
+                let order = 0;
+                for (let i =  0; i < length; i++)
+                {
+                    this.items[i][this.itemOrderPath] = order;
+                    order++;
+
+                    if (this.items[i].id > 0)
                     {
-                        const idx = this.changed.modified.indexOf(item);
+                        const idx = this.changed.modified.indexOf(this.items[i]);
                         if (idx < 0)
                         {
-                            this.push('changed.modified', item);
+                            this.push('changed.modified', this.items[i]);
                         } else {
                             this.notifyPath('changed.modified');
                         }
                     }
-                });
+
+                }
+
             }
+
             _sort(a, b)
             {
                 if (!this.itemOrderPath)
@@ -306,7 +344,7 @@
                     return;
                 }
                 this.items.splice(e.newIndex, 0, this.items.splice(e.oldIndex, 1)[0]);
-                this._reOrderItems(this.items);
+                this._reOrderItems(e.newIndex);
             }
 
             getExpanded()
@@ -373,13 +411,13 @@
                 {
                     this.unshift('items', data.detail);
                     this.notifyPath('items');
-                    this._reOrderItems(this.items);
+                    this._reOrderItems(0);
                     this.notifyAddElement(data);
                     return;
                 }
                 const idx = this.items.indexOf(this.selected);
                 this.splice('items', idx + 1, 0, data.detail);
-                this._reOrderItems(this.items);
+                this._reOrderItems(idx + 1);
                 this.notifyAddElement(data);
             }
 

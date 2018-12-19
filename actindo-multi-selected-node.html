@@ -1,0 +1,250 @@
+<link rel="import" href="actindo-tree-behavior.html">
+<link rel="import" href="actindo-loadable.html">
+<dom-module id="actindo-multi-selected-node">
+    <template>
+        <style>
+            div.headRow {
+                @apply(--font-caption);
+                font-weight: 500;
+                overflow: hidden;
+                opacity: 0.7;
+
+            }
+            div.row {
+                padding: 1rem 1.4rem;
+                display: flex;
+                border-bottom: 1px solid var(--actindo-border-dark);
+                position: relative;
+                align-items: center;
+            }
+            div.row.no-node
+            {
+                border-bottom: none;
+            }
+            div.row:not(.headRow):hover
+            {
+                background-color: white;
+                box-shadow: 0 4px 8px 0 rgba(0,0,0,0.12), 0 2px 4px 0 rgba(0,0,0,0.08)
+            }
+            div.row:hover .remove-icon
+            {
+                display: block;
+            }
+            div.row div.column
+            {
+                justify-content: flex-end;
+                flex-basis: 20%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                text-align: left;
+
+            }
+            div.row div.column.arrow
+            {
+                text-align: center;
+            }
+            .panel
+            {
+                border: 1px solid var(--actindo-border-dark);
+                width: auto;
+                height: 100%;
+                background-color: var(--actindo-light-grey);
+                @apply(--panel-styles);
+            }
+            .row:last-of-type
+            {
+                border-bottom: none;
+                padding: 1rem 1.4rem;
+            }
+            .column:last-of-type
+            {
+                visibility: hidden;
+            }
+            div.column.arrow.last
+            {
+               visibility: hidden;
+            }
+            .hidden
+            {
+                visibility: hidden;
+            }
+            .remove-icon
+            {
+                display: none;
+                position: absolute;
+                right: 0;
+            }
+            .no-nodes-selected-message
+            {
+                @apply(--font-subheader);
+                margin: 2em 0 0 2em;
+                opacity: 0.72;
+                margin: 0px;
+            }
+            div.content
+            {
+                margin: -16px -24px;
+            }
+        </style>
+        <actindo-loadable loading="[[_loading]]">
+            <actindo-basic-panel
+                on-save="_save"
+                class="panel"
+                no-cancel-button
+                header="[[header]]"
+                no-back-icon
+                save-label="[[saveLabel]]"
+            >
+                <div slot="content" class="content">
+                    <template is="dom-if" if="[[!_selectedItems.length]]">
+                        <div class="row headRow no-node">
+                            <span class="no-nodes-selected-message">No nodes selected</span>
+                        </div>
+                    </template>
+
+                    <template is="dom-if" if="[[_selectedItems.length]]">
+                        <div class="row headRow">
+                            <template is="dom-repeat" items="[[_gridHeader]]" as="item">
+                                <div class="column">Level [[item]]</div>
+                                <div class="column arrow" >-></div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template is="dom-repeat" items="{{_selectedItems}}" as="_selectedItem" index-as="selectedItemIdx">
+                        <div class="row">
+                            <template is="dom-repeat" items="[[_gridHeader]]" as="headerIdx">
+                                <div class$="[[_getClass(_selectedItem, headerIdx)]]">[[_getName(_selectedItem, headerIdx)]]</div>
+                                <div class$="arrow [[_getClass(_selectedItem, headerIdx)]]">-></div>
+                            </template>
+                            <paper-icon-button icon="delete" class="remove-icon" on-click="_removeSelectedItem">
+                            </paper-icon-button>
+                        </div>
+                    </template>
+                </div>
+            </actindo-basic-panel>
+        </actindo-loadable>
+    </template>
+    <script>
+        class ActindoMultiSelectedTreeNode extends ActindoTreeMixin(Polymer.Element) {
+            static get is()
+            {
+                return 'actindo-multi-selected-node';
+            }
+
+            static get properties()
+            {
+                return {
+                    header: {
+                        type: String,
+                        value: 'Header'
+                    },
+                    saveLabel:{
+                        type: String,
+                        value: 'Save'
+                    },
+                    _maxLevel: {
+                        type: Number,
+                        value: 1
+                    },
+                    _gridHeader: {
+                        type: Array,
+                        computed: '_getHeader(_maxLevel)'
+                    },
+                    _selectedItems: {
+                        type: Array,
+                        value: function () {return [];}
+                    }
+                }
+            }
+            static get observers()
+            {
+                return [
+                    '_init(items)',
+                    '_buildGrid(flattenItems, selectedItems)'
+                ]
+            }
+
+            _buildGrid(flattenItems = {}, selectedItems)
+            {
+                if(selectedItems && selectedItems.hasOwnProperty('base') && Array.isArray(selectedItems.base))
+                {
+                    selectedItems = selectedItems.base;
+                }
+                if (!Array.isArray(selectedItems))
+                {
+                    return;
+                }
+                if (!Object.keys(flattenItems).length)
+                {
+                    return;
+                }
+                let maxLevel = 1;
+
+                const _selectedItems = selectedItems.map(selectedItem => {
+                    const path = flattenItems[this._getNodeValue(selectedItem)].path;
+                    const ids = path.toString().split('__');
+                    if (maxLevel < ids.length)
+                    {
+                        maxLevel = ids.length;
+                    }
+                    return ids.map(id => flattenItems[id].item);
+                });
+                this.set('_selectedItems', _selectedItems);
+                this.set('_maxLevel', maxLevel);
+                const shouldUpdate = selectedItems.filter(item => !this.value.includes(this._getNodeValue(item)));
+                if (!shouldUpdate.length)
+                {
+                    return;
+                }
+                this.set('value', selectedItems.map(item => this._getNodeValue(item)));
+            }
+
+            _getName(node, headerIdx)
+            {
+                if (node[headerIdx-1])
+                {
+                    return this._getNodeLabel(node[headerIdx-1]);
+                }
+                return null;
+            }
+            _getHeader(level)
+            {
+                if (!level)
+                {
+                    return [1];
+                }
+                const levels =  [...Array(level)].map((v, i) => i + 1);
+                return levels;
+            }
+
+            _save()
+            {
+                this.dispatchEvent(new CustomEvent('save'));
+            }
+
+            _getClass(node, headerIdx)
+            {
+                let cssClass = 'column';
+                if (node.length < headerIdx)
+                {
+                    cssClass = `${cssClass} hidden`;
+                }
+                if (node.length === headerIdx)
+                {
+                    cssClass = `${cssClass} last`;
+                }
+                return cssClass;
+            }
+
+            _removeSelectedItem(event)
+            {
+               this.selectedItems.splice(event.model.selectedItemIdx, 1);
+               this.set('selectedItems', [...this.selectedItems]);
+               this.set('value', this.selectedItems.map(item => this._getNodeValue(item)));
+            }
+        }
+        window.customElements.define(ActindoMultiSelectedTreeNode.is, ActindoMultiSelectedTreeNode);
+    </script>
+</dom-module>
