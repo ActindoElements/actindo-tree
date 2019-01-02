@@ -132,14 +132,6 @@
                 return JSON.parse(json);
             }
 
-            _onValueChanged(value)
-            {
-                if (!this.items || !this.items.length || !value )
-                {
-                    return;
-                }
-            }
-
             _onValueChanged(newValue, oldValue)
             {
                 if (!this.items || !this.items.length)

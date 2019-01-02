@@ -193,7 +193,8 @@
                 });
                 this.set('_selectedItems', _selectedItems);
                 this.set('_maxLevel', maxLevel);
-                const shouldUpdate = selectedItems.filter(item => !this.value.includes(this._getNodeValue(item)));
+                const value = this.value || [];
+                const shouldUpdate = selectedItems.filter(item => !value.includes(this._getNodeValue(item)));
                 if (!shouldUpdate.length)
                 {
                     return;
