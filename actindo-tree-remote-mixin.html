@@ -112,12 +112,15 @@
             * Trigger load data
             * Debounces because of quasi simultaneously changed values of itemsPerPaged and param for example or multiple page changes
             */
-           load()
+           load(callback)
            {
                let me = this;
+               this.items = [];
+
                this._debouncer = Polymer.Debouncer.debounce(this._debouncer,
-                   Polymer.Async.timeOut.after(300),
-                   () => { me._load() });
+                 Polymer.Async.timeOut.after(300),
+                 () => { me._load(callback) }
+               );
            }
 
            /**
@@ -157,7 +160,7 @@
             * @return {Promise}
             * @private
             */
-           _load()
+           _load(callback)
            {
 
                if( this.remote === "" ) //Of course only with remote set
@@ -178,9 +181,9 @@
                    method: 'POST',
                    credentials: 'same-origin',
                    body: this._serialize( request )
-               }).then( function(response){
+               }).then( (response) => {
                    return response.json()
-               } ).then( function(json){
+               }).then( (json) => {
 
                    let items = Polymer.Path.get(json,me.remotePathData);
                    items = me._processData(items);
@@ -189,6 +192,10 @@
                    me.dispatchEvent(
                        new CustomEvent( "after-load", {detail:json} )
                    );
+                   if( typeof callback === "function")
+                   {
+                       callback();
+                   }
                } ).catch( function(error){
                    --me._loadingCount;
                    console.error("Error loading data", error);
