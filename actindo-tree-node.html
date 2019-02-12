@@ -396,7 +396,7 @@ Custom property | Description | Default
                 let selectedNodes = this.selectedNodes;
                 if (this._isMultipleDependentSelection())
                 {
-                    selectedNodes = selectedNodes.filter(node => !node.parentSelected || !node.item.parent);
+                    selectedNodes = selectedNodes.filter(node => !node.item.children || !node.item.children.length);
                 }
                 // selectedNodes = selectedNodes.filter(node => selectedItemsNew.includes(node.item));
                 if (selectedNodes.length === selectedItemsNew.length)
