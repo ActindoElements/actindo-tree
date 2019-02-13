@@ -10,7 +10,7 @@
             paper-scroll-header-panel > div
             {
                 height: auto !important;
-                width: calc(100% - 5px);
+                width: calc(100% - 7.5px);
             }
 
             actindo-tree-resize
@@ -135,7 +135,6 @@
             }
 
         </style>
-
         <actindo-tree-resize min-width="230" drag="" resize="right">
             <div class="column-container">
                 <div on-click="showAddElementDialog" class$="overlay show-overlay-[[adding]] show-dialog-[[showDialog]]">
@@ -187,8 +186,7 @@
                     <iron-icon icon="tree:columnwidth-adjuster"></iron-icon>
                 </div>
             </div>
-        </actindo-treeag-icon
-   >
+        </actindo-tree-resize>
         <template is="dom-if" if="[[expanded]]">
             <actindo-tree-column
                 max-depth="{{maxDepth}}"
