@@ -13,7 +13,7 @@
             div.row {
                 padding: 1rem 1.4rem;
                 display: flex;
-                border-bottom: 1px solid var(--actindo-border-dark);
+                border-bottom: 1px solid var(--actindo-border-light);
                 position: relative;
                 align-items: center;
             }
@@ -46,10 +46,11 @@
             }
             .panel
             {
-                border: 1px solid var(--actindo-border-dark);
+                border: 1px solid var(--actindo-border-light);
+                border-radius: 5px;
                 width: auto;
                 height: 100%;
-                background-color: var(--actindo-light-grey);
+                background-color: var(--embedded-background-color);
                 @apply(--panel-styles);
             }
             .row:last-of-type
@@ -63,7 +64,7 @@
             }
             div.column.arrow.last
             {
-               visibility: hidden;
+                visibility: hidden;
             }
             .hidden
             {
@@ -86,15 +87,25 @@
             {
                 margin: -16px -24px;
             }
+            .tooltip {
+                max-width: 300px;
+                --paper-tooltip: {
+                    white-space: normal;
+                    @apply(--font-caption);
+                    max-height: 40vh;
+                };
+                --paper-tooltip-opacity: 1;
+                z-index: 503;
+            }
         </style>
         <actindo-loadable loading="[[_loading]]">
             <actindo-basic-panel
-                on-save="_save"
-                class="panel"
-                no-cancel-button
-                header="[[header]]"
-                no-back-icon
-                save-label="[[saveLabel]]"
+                    on-save="_save"
+                    class="panel"
+                    no-cancel-button
+                    header="[[header]]"
+                    no-back-icon
+                    save-label="[[saveLabel]]"
             >
                 <div slot="content" class="content">
                     <template is="dom-if" if="[[!_selectedItems.length]]">
@@ -115,7 +126,10 @@
                     <template is="dom-repeat" items="{{_selectedItems}}" as="_selectedItem" index-as="selectedItemIdx">
                         <div class="row">
                             <template is="dom-repeat" items="[[_gridHeader]]" as="headerIdx">
-                                <div class$="[[_getClass(_selectedItem, headerIdx)]]">[[_getName(_selectedItem, headerIdx)]]</div>
+                                <div id$="selected-node-[[selectedItemIdx]]-[[headerIdx]]" class$="[[_getClass(_selectedItem, headerIdx)]]">[[_getName(_selectedItem, headerIdx)]]</div>
+                                <paper-tooltip style-level="1" class="tooltip" for="selected-node-[[selectedItemIdx]]-[[headerIdx]]" offset="0"  position="right">
+                                    [[_getName(_selectedItem, headerIdx)]]
+                                </paper-tooltip>
                                 <div class$="arrow [[_getClass(_selectedItem, headerIdx)]]">-></div>
                             </template>
                             <paper-icon-button icon="delete" class="remove-icon" on-click="_removeSelectedItem">
@@ -202,6 +216,7 @@
                 this.set('value', selectedItems.map(item => this._getNodeValue(item)));
             }
 
+
             _getName(node, headerIdx)
             {
                 if (node[headerIdx-1])
@@ -241,9 +256,9 @@
 
             _removeSelectedItem(event)
             {
-               this.selectedItems.splice(event.model.selectedItemIdx, 1);
-               this.set('selectedItems', [...this.selectedItems]);
-               this.set('value', this.selectedItems.map(item => this._getNodeValue(item)));
+                this.selectedItems.splice(event.model.selectedItemIdx, 1);
+                this.set('selectedItems', [...this.selectedItems]);
+                this.set('value', this.selectedItems.map(item => this._getNodeValue(item)));
             }
         }
         window.customElements.define(ActindoMultiSelectedTreeNode.is, ActindoMultiSelectedTreeNode);
