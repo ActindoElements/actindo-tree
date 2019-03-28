@@ -106,6 +106,7 @@
                     header="[[header]]"
                     no-back-icon
                     save-label="[[saveLabel]]"
+                    no-save-button="[[disabled]]"
             >
                 <div slot="content" class="content">
                     <template is="dom-if" if="[[!_selectedItems.length]]">
@@ -157,6 +158,14 @@
                     saveLabel:{
                         type: String,
                         value: 'Save'
+                    },
+                    /**
+                     * if this is true, the button to activate the edit mode is disabled
+                     * @type Boolean
+                     */
+                    disabled: {
+                        type: Boolean,
+                        value: false
                     },
                     _maxLevel: {
                         type: Number,
