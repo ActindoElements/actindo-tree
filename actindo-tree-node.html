@@ -122,7 +122,7 @@ Custom property | Description | Default
             <div class="node-row"  style$="[[_computeStyle(level)]]" on-click="_onNodeClick">
                 <iron-icon id="toggle" class$="{{_computeClass(item.*, opened)}}" icon$="{{_computeNodeIcon(item.*, opened)}}"></iron-icon>
                 <template is="dom-if" if="[[_isMultiple()]]">
-                    <paper-checkbox class="selector" partial$="[[partiallySelected]]" checked="{{selected}}"></paper-checkbox>
+                    <paper-checkbox class="selector" partial$="[[partiallySelected]]" checked="{{selected}}" disabled="[[disabled]]"></paper-checkbox>
                 </template>
                 <iron-icon hidden$="{{!_computeIcon(item.*)}}" class="node-icon" icon$="{{_computeIcon(item.*)}}"></iron-icon>
                 <span class$="no-children-{{!_computeNodeIcon(item.*)}} node-name">[[_getNodeLabel(item)]]</span>
@@ -148,6 +148,7 @@ Custom property | Description | Default
                                     trigger-node-level="{{triggerNodeLevel}}"
                                     flatten-items="[[flattenItems]]"
                                     leaves-selectable-only="[[leavesSelectableOnly]]"
+                                    disabled="[[disabled]]"
                                 ></actindo-tree-node>
                             </li>
                         </template>
@@ -169,6 +170,7 @@ Custom property | Description | Default
                                     selected-items="[[selectedItems]]"
                                     leaves-selectable-only="[[leavesSelectableOnly]]"
                                     flatten-items="[[flattenItems]]"
+                                    disabled="[[disabled]]"
                                 ></actindo-tree-node>
                             </li>
                         </template>
@@ -190,6 +192,7 @@ Custom property | Description | Default
                                     selected-items="[[selectedItems]]"
                                     leaves-selectable-only="[[leavesSelectableOnly]]"
                                     flatten-items="[[flattenItems]]"
+                                    disabled="[[disabled]]"
                                 ></actindo-tree-node>
                             </li>
                         </template>
@@ -310,6 +313,14 @@ Custom property | Description | Default
                         value: false
                     },
                     allowDeselect: {
+                        type: Boolean,
+                        value: false
+                    },
+                    /**
+                     * if this is true, this node and its children are not selectable
+                     * @type Boolean
+                     */
+                    disabled: {
                         type: Boolean,
                         value: false
                     },
@@ -498,6 +509,11 @@ Custom property | Description | Default
                 {
                     this.set("shouldRenderChildren", true);
                     this.set("opened", !this.opened && this.item.children && this.item.children.length);
+                    return;
+                }
+
+                if(this.disabled)
+                {
                     return;
                 }
 
