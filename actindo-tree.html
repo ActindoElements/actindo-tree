@@ -14,7 +14,9 @@ Example:
 <dom-module id="actindo-tree">
     <template>
         <style>
-
+            :host {
+                display: block;
+            }
         </style>
         <actindo-loadable loading="[[_loading]]">
             <template is="dom-repeat" items="{{items}}" as="item">
