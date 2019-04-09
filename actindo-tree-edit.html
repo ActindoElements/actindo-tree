@@ -212,6 +212,17 @@
                 ]
             }
 
+            ready()
+            {
+                super.ready();
+
+                // Select first item on first load
+                if (this.items && this.items.length)
+                {
+                    this.selected = this.items[0];
+                }
+            }
+
             resetState()
             {
                 this.waiting = false;
