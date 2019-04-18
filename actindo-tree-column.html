@@ -377,10 +377,16 @@
                 if (!newValue.children){
                     this.expanded = false;
                 }
+                else
+                {
+                    this.expanded = true;
+                }
             }
 
             notifyAddElement(data)
             {
+                this.selected = data.detail;
+
                 // Only push to created if the item is root or a child of a real item
                 if (!data.detail.parent_id || data.detail.parent_id >= 0)
                 {
