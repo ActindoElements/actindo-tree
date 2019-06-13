@@ -267,8 +267,6 @@
                     return;
                 }
                 this.dispatchEvent( new CustomEvent("submit", {detail: this.changed }));
-                this.resetState();
-
             }
 
             _onKeysPressed(e)
