@@ -1,3 +1,4 @@
+<link rel="import" href="actindo-tree-remote-mixin.html">
 <link rel="import" href="actindo-tree-column.html">
 <dom-module id="actindo-tree-edit">
     <template>
@@ -108,7 +109,7 @@
         </iron-a11y-keys>
     </template>
     <script>
-        class ActindoTreeEdit extends RemoteMixin(Polymer.Element)
+        class ActindoTreeEdit extends ActindoTreeRemoteMixin(Polymer.Element)
         {
             static get is()
             {
