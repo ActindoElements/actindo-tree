@@ -267,6 +267,11 @@
                     });
                     return;
                 }
+                else
+                {
+                    this.dispatchEvent( new CustomEvent("save", {detail: this.changed }));
+                    //Its very important to call reset state afterwards!!! because here we do not know if it was successful or not => we cannot reset state
+                }
             }
 
             _onKeysPressed(e)
