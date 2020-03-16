@@ -68,8 +68,66 @@
                 bottom: 16px;
                 right: 16px;
             }
+
+            div.overlay {
+                @apply(--font-subheader);
+                background-color: white;
+                z-index: 10;
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                flex-direction: column;
+                @apply(--loading-overlay-style);
+            }
+
+            div.opacque {
+                opacity: 0.85;
+            }
+
+            div.overlay div {
+                margin: 1rem 0;
+            }
+
+            div.splash
+            {
+                position: absolute;
+                top: 0px;
+                bottom: 0px;
+                left: 0px;
+                right: 0px;
+                z-index: 99;
+                height: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                background-color: #FFFFFF;
+                @apply(--font-title);
+            }
+            div.splash span.dots
+            {
+                position: absolute;
+                right: -25px;
+                top: 0;
+                width: 20px;
+            }
+
         </style>
         <iron-a11y-keys id="a11y" keys="esc" on-keys-pressed="_onKeysPressed" stop-keyboard-event-propagation="true">
+            <template is="dom-if" if="[[waiting]]">
+                <div class="overlay opacque">
+                    <div class="splash">
+                        <div style="position: relative">
+                            <span>[[submittingLabel]]</span>
+                            <span class="dots">[[dots]]</span>
+                        </div>
+                    </div>
+                </div>
+            </template>
             <actindo-basic-panel
                 no-toolbar="[[noToolbar]]"
                 id="panel"
@@ -203,6 +261,10 @@
                     disableDeleteForReadOnly: {
                         type: Boolean,
                         value: false
+                    },
+                    submittingLabel: {
+                        type: String,
+                        value: "Submitting data"
                     }
                 });
             }
@@ -210,7 +272,8 @@
             static get observers()
             {
                 return [
-                    '_onTreeChanged(changed.*)'
+                    '_onTreeChanged(changed.*)',
+                    '_startStopSplashDots(waiting)'
                 ]
             }
 
@@ -297,6 +360,23 @@
 
                 this.dispatchEvent( new CustomEvent("cancel", {detail: {} }));
                 this.resetState();
+            }
+
+            _startStopSplashDots(waiting)
+            {
+                if (waiting)
+                {
+                    let count = 0;
+                    this.interval  = window.setInterval( () => {
+                        ++count;
+                        this.dots = ".".repeat( count%3+1 );
+                    }, 500 );
+                }
+                else
+                {
+                    window.clearInterval(this.interval);
+                }
+
             }
         }
         customElements.define(ActindoTreeEdit.is, ActindoTreeEdit);
