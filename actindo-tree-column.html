@@ -144,43 +144,45 @@
                 <paper-scroll-header-panel>
                     <div slot="content" class="column">
                         <sortable-js class$="hide-[[!items.length]]" on-end="_onSortFinish" handle=".drag-icon" >
-                            <template is="dom-repeat" items="{{items}}" sort="_sort" as="item">
-                                <actindo-tree-column-item
-                                    selected="[[_isSelected(selected, item)]]"
-                                    data="{{item}}"
-                                    on-delete="onDelete"
-                                    on-row-clicked="onClick"
-                                    disabled-drag="{{disabledDrag}}"
-                                    on-edit="edit"
-                                    name-field="[[nameField]]"
-                                    index="[[index]]"
-                                    level="[[level]]"
-                                    max-depth="[[maxDepth]]"
-                                    disable-key-change="[[disableKeyChange]]"
-                                    disable-key-change-for-read-only="[[disableKeyChangeForReadOnly]]"
-                                    disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
-                                    disable-delete="[[disableDelete]]"
-                                    disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
-                                >
-                                    <iron-icon class="drag-icon" slot="prefix" icon="icons:menu"></iron-icon>
+                            <template is="dom-if" if="[[renderDomRepeat]]" restamp>
+                                <template is="dom-repeat" items="{{items}}" sort="_sort" as="item">
+                                    <actindo-tree-column-item
+                                            selected="[[_isSelected(selected, item)]]"
+                                            data="{{item}}"
+                                            on-delete="onDelete"
+                                            on-row-clicked="onClick"
+                                            disabled-drag="{{disabledDrag}}"
+                                            on-edit="edit"
+                                            name-field="[[nameField]]"
+                                            index="[[index]]"
+                                            level="[[level]]"
+                                            max-depth="[[maxDepth]]"
+                                            disable-key-change="[[disableKeyChange]]"
+                                            disable-key-change-for-read-only="[[disableKeyChangeForReadOnly]]"
+                                            disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
+                                            disable-delete="[[disableDelete]]"
+                                            disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
+                                    >
+                                        <iron-icon class="drag-icon" slot="prefix" icon="icons:menu"></iron-icon>
 
-                                </actindo-tree-column-item>
+                                    </actindo-tree-column-item>
+                                </template>
                             </template>
                         </sortable-js>
                     </div>
                 </paper-scroll-header-panel>
                 <actindo-tree-detail-dialog
-                    no-cancel-on-outside-click="true"
-                    class="dialog"
-                    id="dialog"
-                    on-cancel="cancelAddElement"
-                    name-field="[[nameField]]"
-                    on-submit="addElement"
-                    disable-key-change="[[disableKeyChange]]"
-                    disable-key-change-for-read-only="[[disableKeyChangeForReadOnly]]"
-                    disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
-                    disable-delete="[[disableDelete]]"
-                    disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
+                        no-cancel-on-outside-click="true"
+                        class="dialog"
+                        id="dialog"
+                        on-cancel="cancelAddElement"
+                        name-field="[[nameField]]"
+                        on-submit="addElement"
+                        disable-key-change="[[disableKeyChange]]"
+                        disable-key-change-for-read-only="[[disableKeyChangeForReadOnly]]"
+                        disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
+                        disable-delete="[[disableDelete]]"
+                        disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
                 ></actindo-tree-detail-dialog>
                 <div id="right" class="right">
                     <iron-icon icon="tree:columnwidth-adjuster"></iron-icon>
@@ -189,21 +191,21 @@
         </actindo-tree-resize>
         <template is="dom-if" if="[[expanded]]">
             <actindo-tree-column
-                max-depth="{{maxDepth}}"
-                level="[[getChildLevel()]]"
-                min-fake-id="{{minFakeId}}"
-                parent-id="[[selected.id]]"
-                changed="{{changed}}"
-                name-field="[[nameField]]"
-                item-order-path="[[itemOrderPath]]"
-                adding="{{adding}}"
-                show-dialog="{{showDialog}}"
-                items="[[selected.children]]"
-                disable-key-change="[[disableKeyChange]]"
-                disable-key-change-for-read-only="[[disableKeyChangeForReadOnly]]"
-                disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
-                disable-delete="[[disableDelete]]"
-                disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
+                    max-depth="{{maxDepth}}"
+                    level="[[getChildLevel()]]"
+                    min-fake-id="{{minFakeId}}"
+                    parent-id="[[selected.id]]"
+                    changed="{{changed}}"
+                    name-field="[[nameField]]"
+                    item-order-path="[[itemOrderPath]]"
+                    adding="{{adding}}"
+                    show-dialog="{{showDialog}}"
+                    items="[[selected.children]]"
+                    disable-key-change="[[disableKeyChange]]"
+                    disable-key-change-for-read-only="[[disableKeyChangeForReadOnly]]"
+                    disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
+                    disable-delete="[[disableDelete]]"
+                    disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
             ></actindo-tree-column>
         </template>
 
@@ -245,7 +247,8 @@
                     },
                     items: {
                         type: Array,
-                        notify: true
+                        notify: true,
+                        observer: "_onItemsChanged"
                     },
                     disabledDrag: {
                         type: Boolean,
@@ -289,8 +292,20 @@
                     },
                     disableDeleteForReadOnly: {
                         type: Boolean,
+                    },
+                    renderDomRepeat: {
+                        type: Boolean,
+                        value: true
                     }
                 });
+            }
+
+            _onItemsChanged()
+            {
+                this.renderDomRepeat = false;
+                window.setTimeout(()=>{
+                    this.renderDomRepeat = true;
+                }, 0);
             }
 
             _reOrderItems(newIdx)
