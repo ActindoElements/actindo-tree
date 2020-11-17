@@ -1,4 +1,5 @@
 <link rel="import" href="../../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../../bower_components/actindo-combobox/actindo-combobox.html">
 <dom-module id="actindo-tree-detail-dialog">
     <template>
         <style>
@@ -80,9 +81,28 @@
                 font-size: 0.9em;
             }
 
+            paper-input[hidden]
+            {
+                display: none;
+            }
+
             paper-icon-button[hidden] {
                 visibility: hidden;
             }
+            actindo-combobox
+            {
+                --paper-input-container-input-color: var(--actindo-primary);
+                --paper-input-container_-_padding: 0;
+                --paper-dropdown-menu-icon: {
+                    color: var(--actindo-primary);
+                };
+                --paper-font-subhead_-_font-size: var(--font-menu_-_font-size);
+                --paper-dropdown-menu-ripple:
+                {
+                    display: none;
+                };
+            }
+
 
         </style>
         <iron-a11y-keys id="a11y" keys="enter" on-keys-pressed="onEnterPressed">
@@ -92,14 +112,40 @@
                 no-cancel-on-outside-click="[[noCancelOnOutsideClick]]"
             >
                 <span class="dialog-header">Add Element</span>
-                <div class="content">
-                    <paper-input
-                        autofocus
-                        value="{{name}}"
-                        label="Name"
-                        disabled="[[ _isDisabledNameChange(data) ]]"
+                <template is="dom-if" if="[[useTranslations]]">
+                    <actindo-combobox
+                            id="languageSwitch"
+                            no-label-float
+                            class="no-underline"
+                            items="[[locales]]"
+                            display-field="name"
+                            value-field="key"
+                            value="{{locale}}"
                     >
-                    </paper-input>
+                    </actindo-combobox>
+                </template>
+                <div class="content">
+                    <template is="dom-if" if="[[!useTranslations]]" restamp>
+                        <paper-input
+                            autofocus
+                            value="{{name}}"
+                            label="Name"
+                            always-float-label
+                            disabled="[[_isDisabledNameChange(data)]]"
+                        >
+                        </paper-input>
+                    </template>
+                    <template is="dom-if" if="[[useTranslations]]" restamp>
+                        <template is="dom-repeat" items="[[locales]]">
+                            <paper-input
+                                    label="[[_getName(item)]]"
+                                    data-field$="[[item.field]]"
+                                    value="[[_getValue(item,data)]]"
+                                    hidden$="[[_hidden(item, locale)]]"
+                            ></paper-input>
+                        </template>
+                    </template>
+
                     <paper-input
                         value="{{key}}"
                         label="Key"
@@ -179,9 +225,57 @@
                     },
                     disableDeleteForReadOnly: {
                         type: Boolean,
+                    },
+                    useTranslations: {
+                        type: Boolean,
+                        value: false
+                    },
+                    locales: {
+                        type: Array,
+                        value: () => [],
+                        observer:"_localesChanged"
+                    },
+                    defaultLocale: {
+                        type: String
+                    },
+                    locale: {
+                        type: String
                     }
                 }
             }
+
+            _hidden(item, locale)
+            {
+                return item.key !== locale;
+            }
+
+            _getName(item)
+            {
+                return 'Name ('+item.name+')';
+            }
+
+            _getValue(item,data)
+            {
+                return Polymer.Path.get(data,item.field);
+            }
+
+            ensureSelected()
+            {
+                this._localesChanged(this.locales);
+            }
+
+            _localesChanged(newValue)
+            {
+                if(!Array.isArray(newValue) || !newValue.length)
+                {
+                    return;
+                }
+                if(!this.locale)
+                {
+                    this.locale = this.defaultLocale ? this.defaultLocale : newValue[0].key;
+                }
+            }
+
             _getDisabled(name)
             {
                 return !name;
@@ -247,7 +341,20 @@
                 Object.assign(this.data, {
                   key: this.key
                 });
-                this.data[this.nameField] = this.name;
+
+                if(this.useTranslations)
+                {
+                    const translatableInputs = Polymer.dom(this.root).querySelectorAll('paper-input[data-field]');
+                    translatableInputs.forEach( (translatableInput) => {
+                        this.data[translatableInput.getAttribute('data-field')] = translatableInput.value;
+                        }
+                    );
+                }
+                else
+                {
+                    this.data[this.nameField] = this.name;
+                }
+
                 this.dispatchEvent( new CustomEvent("submit", {detail: this.data }));
             }
 

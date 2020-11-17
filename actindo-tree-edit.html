@@ -159,6 +159,9 @@
                         disable-delete="[[disableDelete]]"
                         disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
                         item-order-path="{{itemOrderPath}}"
+                        use-translations="[[useTranslations]]"
+                        locales="[[locales]]"
+                        default-locale="[[defaultLocale]]"
                     >
                     </actindo-tree-column>
                     <paper-fab on-click="_showAddingOverlay" icon="add"></paper-fab>
@@ -265,6 +268,17 @@
                     submittingLabel: {
                         type: String,
                         value: "Submitting data"
+                    },
+                    useTranslations: {
+                        type: Boolean,
+                        value: false
+                    },
+                    locales: {
+                        type: Object,
+                        value: () => {return{};}
+                    },
+                    defaultLocale: {
+                        type: String
                     }
                 });
             }

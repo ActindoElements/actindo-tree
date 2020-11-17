@@ -162,6 +162,9 @@
                                             disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
                                             disable-delete="[[disableDelete]]"
                                             disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
+                                            use-translations="[[useTranslations]]"
+                                            locales="[[locales]]"
+                                            default-locale="[[defaultLocale]]"
                                     >
                                         <iron-icon class="drag-icon" slot="prefix" icon="icons:menu"></iron-icon>
 
@@ -183,6 +186,9 @@
                         disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
                         disable-delete="[[disableDelete]]"
                         disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
+                        use-translations="[[useTranslations]]"
+                        locales="[[locales]]"
+                        default-locale="[[defaultLocale]]"
                 ></actindo-tree-detail-dialog>
                 <div id="right" class="right">
                     <iron-icon icon="tree:columnwidth-adjuster"></iron-icon>
@@ -206,6 +212,9 @@
                     disable-name-change-for-read-only="[[disableNameChangeForReadOnly]]"
                     disable-delete="[[disableDelete]]"
                     disable-delete-for-read-only="[[disableDeleteForReadOnly]]"
+                    use-translations="[[useTranslations]]"
+                    locales="[[locales]]"
+                    default-locale="[[defaultLocale]]"
             ></actindo-tree-column>
         </template>
 
@@ -296,7 +305,18 @@
                     renderDomRepeat: {
                         type: Boolean,
                         value: true
-                    }
+                    },
+                    useTranslations: {
+                        type: Boolean,
+                        value: false
+                    },
+                    locales: {
+                        type: Object,
+                        value: () => {return{};}
+                    },
+                    defaultLocale: {
+                        type: String
+                    },
                 });
             }
 
@@ -421,6 +441,19 @@
                     active: true,
                     parent_id: this.parentId
                 });
+
+                if(this.useTranslations)
+                {
+                    for(let i=0;i<this.locales.length;i++)
+                    {
+                        if(this.locales[i].key === this.defaultLocale)
+                        {
+                            data.detail.name = data.detail.title = data.detail[this.locales[i].field];
+                            break;
+                        }
+                    }
+                }
+
                 this.minFakeId = this.minFakeId - 1;
                 if (this.itemOrderPath)
                 {
@@ -450,7 +483,7 @@
                     const idx = this.items.indexOf(this.selected);
                     dialog.style.top = 30 * (idx + 1) + 'px';
                 }
-
+                dialog.ensureSelected();
                 dialog.reset();
                 dialog.open();
             }
