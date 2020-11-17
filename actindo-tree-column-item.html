@@ -71,7 +71,18 @@
                 </paper-icon-button>
             </div>
             <iron-icon hidden$="[[!showExpandIcon]]" on-click="onClick" icon="tree:menu-right"></iron-icon>
-            <actindo-tree-detail-dialog name-field="[[nameField]]" class="[[_isFirst(index)]]" on-delete="onDelete" data="[[data]]" on-submit="onEditSubmit" editing="true" id="dialog"></actindo-tree-detail-dialog>
+            <actindo-tree-detail-dialog
+                    default-locale="[[defaultLocale]]"
+                    use-translations="[[useTranslations]]"
+                    locales="[[locales]]"
+                    name-field="[[nameField]]"
+                    class="[[_isFirst(index)]]"
+                    on-delete="onDelete"
+                    data="[[data]]"
+                    on-submit="onEditSubmit"
+                    editing="true"
+                    id="dialog"
+            ></actindo-tree-detail-dialog>
         </li>
 
     </template>
@@ -130,6 +141,17 @@
                     },
                     disableDeleteForReadOnly: {
                         type: Boolean,
+                    },
+                    useTranslations: {
+                        type: Boolean,
+                        value: false
+                    },
+                    locales: {
+                        type: Object,
+                        value: () => {return{};}
+                    },
+                    defaultLocale: {
+                        type: String
                     }
                 }
             }
@@ -165,7 +187,22 @@
 
             onEditSubmit(data)
             {
-                this.set('title', data.detail[this.nameField]);
+                if(!this.useTranslations)
+                {
+                    this.set('title', data.detail[this.nameField]);
+                }
+                else
+                {
+                    for(let i=0;i<this.locales.length;i++)
+                    {
+                        if(this.locales[i].key === this.defaultLocale)
+                        {
+                            this.set('title', data.detail[this.locales[i].field]);
+                            break;
+                        }
+                    }
+                }
+
                 this.dispatchEvent( new CustomEvent("edit", {detail: data.detail }));
             }
             onClick()
