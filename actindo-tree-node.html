@@ -149,6 +149,7 @@ Custom property | Description | Default
                                     flatten-items="[[flattenItems]]"
                                     leaves-selectable-only="[[leavesSelectableOnly]]"
                                     disabled="[[disabled]]"
+                                    on-rendered="_onChildRendered"
                                 ></actindo-tree-node>
                             </li>
                         </template>
@@ -171,6 +172,7 @@ Custom property | Description | Default
                                     leaves-selectable-only="[[leavesSelectableOnly]]"
                                     flatten-items="[[flattenItems]]"
                                     disabled="[[disabled]]"
+                                    on-rendered="_onChildRendered"
                                 ></actindo-tree-node>
                             </li>
                         </template>
@@ -193,6 +195,7 @@ Custom property | Description | Default
                                     leaves-selectable-only="[[leavesSelectableOnly]]"
                                     flatten-items="[[flattenItems]]"
                                     disabled="[[disabled]]"
+                                    on-rendered="_onChildRendered"
                                 ></actindo-tree-node>
                             </li>
                         </template>
@@ -284,7 +287,8 @@ Custom property | Description | Default
                     },
                     opened: {
                         type: Boolean,
-                        value: false
+                        value: false,
+                        observer: '_onOpenedChanged'
                     },
                     displayField: {
                         type: String,
@@ -324,6 +328,44 @@ Custom property | Description | Default
                         type: Boolean,
                         value: false
                     },
+                    childrenRenderedCount: {
+                        type: Number,
+                        value: 0
+                    },
+                    childrenFinishedRendering: {
+                        type: Boolean,
+                        value: false
+                    },
+                    lastChildSelectEvent: {
+                        type: Object,
+                        value: null
+                    }
+                }
+            }
+
+            connectedCallback() {
+                super.connectedCallback();
+                setTimeout(() =>{
+                    this.dispatchEvent(new CustomEvent('rendered', {}));
+                });
+            }
+
+            _onChildRendered() {
+                if(++this.childrenRenderedCount >= this.item.children.length - 1)
+                {
+                    this.childrenFinishedRendering = true;
+                    if(this.lastChildSelectEvent)
+                    {
+                        this._onChildSelect(this.lastChildSelectEvent);
+                    }
+                }
+            }
+
+            _onOpenedChanged(open) {
+                if(!open)
+                {
+                    this.childrenRenderedCount = 0;
+                    this.childrenFinishedRendering = false;
                 }
             }
 
@@ -385,8 +427,12 @@ Custom property | Description | Default
                 }
             }
 
-            _onSelectedChanged(selected)
+            _onSelectedChanged(selected, previousValue)
             {
+                if(!previousValue && !selected)
+                {
+                    return;
+                }
                 const index = this.selectedNodes.indexOf(this);
 
                 if (!selected && index >= 0)
@@ -404,7 +450,7 @@ Custom property | Description | Default
 
             _onSelectedItemsChanged(selectedItemsNew, selectedItemsOld)
             {
-                let selectedNodes = this.selectedNodes;
+                let selectedNodes = [...this.selectedNodes];
                 if (this._isMultipleDependentSelection())
                 {
                     selectedNodes = selectedNodes.filter(node => !node.parentSelected || !node.item.parent);
@@ -415,9 +461,9 @@ Custom property | Description | Default
                     return;
                 }
 
-                if (selectedItemsNew.indexOf(this.item) >= 0)
+                if (selectedItemsNew.filter(i => i.id === this.item.id).length)
                 {
-                    this.setNodeStatus(!this.selected);
+                    this.setNodeStatus(true);
                 }
                 else
                 {
@@ -470,6 +516,13 @@ Custom property | Description | Default
 
             _onChildSelect(event)
             {
+                this.lastChildSelectEvent = event;
+
+                if(!this.childrenFinishedRendering)
+                {
+                    return;
+                }
+
                 if (!this._isMultipleDependentSelection())
                 {
                     this.set('opened', true);
