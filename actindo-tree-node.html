@@ -149,7 +149,7 @@ Custom property | Description | Default
                                     flatten-items="[[flattenItems]]"
                                     leaves-selectable-only="[[leavesSelectableOnly]]"
                                     disabled="[[disabled]]"
-                                    on-rendered="_onChildRendered"
+                                    on-rendered-changed="_onChildRendered"
                                 ></actindo-tree-node>
                             </li>
                         </template>
@@ -172,7 +172,7 @@ Custom property | Description | Default
                                     leaves-selectable-only="[[leavesSelectableOnly]]"
                                     flatten-items="[[flattenItems]]"
                                     disabled="[[disabled]]"
-                                    on-rendered="_onChildRendered"
+                                    on-rendered-changed="_onChildRendered"
                                 ></actindo-tree-node>
                             </li>
                         </template>
@@ -195,7 +195,7 @@ Custom property | Description | Default
                                     leaves-selectable-only="[[leavesSelectableOnly]]"
                                     flatten-items="[[flattenItems]]"
                                     disabled="[[disabled]]"
-                                    on-rendered="_onChildRendered"
+                                    on-rendered-changed="_onChildRendered"
                                 ></actindo-tree-node>
                             </li>
                         </template>
@@ -339,25 +339,36 @@ Custom property | Description | Default
                     lastChildSelectEvent: {
                         type: Object,
                         value: null
+                    },
+                    rendered: {
+                        type: Boolean,
+                        notify: true
                     }
                 }
             }
 
             connectedCallback() {
                 super.connectedCallback();
-                setTimeout(() =>{
-                    this.dispatchEvent(new CustomEvent('rendered', {}));
-                });
+                if(!this.item.children.length || !this.opened)
+                {
+                    setTimeout(() => {
+                        this.rendered = true;
+                    }, 0);
+                }
             }
 
-            _onChildRendered() {
-                if(++this.childrenRenderedCount >= this.item.children.length - 1)
+            _onChildRendered(event) {
+                event.stopPropagation();
+                if(++this.childrenRenderedCount === this.item.children.length)
                 {
                     this.childrenFinishedRendering = true;
                     if(this.lastChildSelectEvent)
                     {
                         this._onChildSelect(this.lastChildSelectEvent);
                     }
+                    setTimeout(() =>{
+                        this.rendered = true;
+                    }, 0);
                 }
             }
 
