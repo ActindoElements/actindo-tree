@@ -44,12 +44,12 @@ Example:
 
             static get properties()
             {
-                return Object.assign({}, super.properties, {
+                return {
                     selectionMode: {
                         type: String,
                         value: 'dependent'
                     }
-                });
+                }
             }
 
             static get observers()
