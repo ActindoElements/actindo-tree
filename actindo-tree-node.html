@@ -288,7 +288,6 @@ Custom property | Description | Default
                     opened: {
                         type: Boolean,
                         value: false,
-                        observer: '_onOpenedChanged'
                     },
                     displayField: {
                         type: String,
@@ -369,14 +368,6 @@ Custom property | Description | Default
                     setTimeout(() =>{
                         this.rendered = true;
                     }, 0);
-                }
-            }
-
-            _onOpenedChanged(open) {
-                if(!open)
-                {
-                    this.childrenRenderedCount = 0;
-                    this.childrenFinishedRendering = false;
                 }
             }
 
