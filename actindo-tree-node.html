@@ -348,7 +348,7 @@ Custom property | Description | Default
 
             connectedCallback() {
                 super.connectedCallback();
-                if(!this.item.children.length || !this.opened)
+                if(!this.item.children || !this.item.children.length || !this.opened)
                 {
                     setTimeout(() => {
                         this.rendered = true;
